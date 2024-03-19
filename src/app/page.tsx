@@ -1,21 +1,19 @@
-"use client";
 import makeRequest from "@/utils/requests";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-export default function Home() {
-  const [mangas, setMangas] = useState([]);
-  useEffect(() => {
-    makeRequest("manga").then((res) => {
-      console.log(res);
-      setMangas(res.data);
-    });
-    fetch("/api/manga").then((res) => console.log(res));
-  }, []);
+export default async function Home() {
+  const getMangas = async () => {
+    "use server";
+    const mangas = await makeRequest("manga");
+    return mangas;
+  };
+
+  const mangas = await getMangas();
+  console.log(mangas);
 
   return (
     <main>
-      {mangas?.map((manga: any, idx: number) => (
+      {mangas?.data?.map((manga: any, idx: number) => (
         <Link href="#" key={idx}>
           {manga?.id}
         </Link>
