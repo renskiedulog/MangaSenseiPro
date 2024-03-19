@@ -48,3 +48,11 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+.overlay {
+  background: linear-gradient(to top, #121212, transparent);
+}
+
+.featured-bg {
+  filter: brightness(.3);
+}
