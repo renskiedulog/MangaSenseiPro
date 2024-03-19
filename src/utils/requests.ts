@@ -12,7 +12,7 @@ export const makeRequest = async (
   endpoint: string,
   params: Params = {},
   filter: Filter = {},
-  config: Object = {}
+  config: Object = { cache: "no-store" }
 ): Promise<any> => {
   const url = new URL(`${baseUrl}${endpoint}`);
   Object.keys(params).forEach((key) => {
