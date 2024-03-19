@@ -6,8 +6,10 @@ export default async function Home() {
   console.log(mangas);
   return (
     <main>
-      {mangas?.data?.map((manga: any) => (
-        <Link href="#">{manga?.id}</Link>
+      {mangas?.data?.map((manga: any, idx: number) => (
+        <Link href="#" key={idx}>
+          {manga?.id}
+        </Link>
       ))}
     </main>
   );
