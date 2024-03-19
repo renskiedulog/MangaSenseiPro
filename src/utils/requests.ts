@@ -14,9 +14,7 @@ const makeRequest = async (
         .join("&");
     }
 
-    const url = `${baseUrl}/api/${endpoint}${
-      queryString ? `?${queryString}` : ""
-    }`;
+    const url = `/api/${endpoint}${queryString ? `?${queryString}` : ""}`;
 
     console.log("Request URL:", url); // Add this line for debugging
 

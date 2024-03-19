@@ -10,7 +10,9 @@ export default function Home() {
       console.log(res);
       setMangas(res.data);
     });
+    fetch("/api/proxy").then((res) => console.log(res));
   }, []);
+
   return (
     <main>
       {mangas?.map((manga: any, idx: number) => (
