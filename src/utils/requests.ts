@@ -1,4 +1,4 @@
-const baseUrl = "https://";
+const baseUrl = "https://api.mangadex.org";
 
 const makeRequest = async (
   endpoint: string,
@@ -14,7 +14,7 @@ const makeRequest = async (
         .join("&");
     }
 
-    const url = `/api/${endpoint}${queryString ? `?${queryString}` : ""}`;
+    const url = `${baseUrl}/${endpoint}${queryString ? `?${queryString}` : ""}`;
 
     console.log("Request URL:", url); // Add this line for debugging
 
