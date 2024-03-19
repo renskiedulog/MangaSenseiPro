@@ -27,7 +27,7 @@ const MangaCarousel = async () => {
           alt="alt"
           className="z-20 w-1/5 h-4/5 object-cover rounded-md m-auto"
         />
-        <div className="z-20 h-4/5 w-full">
+        <div className="z-20 w-4/5 h-4/5">
           {/* Badges */}
           <h2 className="flex gap-1 uppercase font-semibold text-white">
             <p

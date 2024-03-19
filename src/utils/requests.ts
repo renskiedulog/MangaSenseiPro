@@ -67,6 +67,7 @@ export const fetchCoverImages = async (array: any[], config: Object = {}) => {
               {},
               config
             );
+            ("use server");
             const coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${response?.data?.attributes?.fileName}.512.jpg`;
 
             Object.assign(manga, { cover: coverUrl });
