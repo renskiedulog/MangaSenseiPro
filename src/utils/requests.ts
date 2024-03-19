@@ -131,8 +131,8 @@ export const fetchMangaInfo = async (mangaId: string) => {
 };
 
 export function timeAgo(dateString: string) {
-  const providedDate = new Date(dateString);
-  const now = new Date();
+  const providedDate: any = new Date(dateString);
+  const now: any = new Date();
 
   const timeDifferenceInSeconds = Math.floor((now - providedDate) / 1000);
 
