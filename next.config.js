@@ -6,6 +6,10 @@ module.exports = () => {
             {
                 source: "/api/:path*",
                 destination: "https://api.mangadex.org/:path*"
+            },
+            {
+                source: "/image/:path*",
+                destination: "https://uploads.mangadex.org/:path*"
             }
         ]
     }
