@@ -70,7 +70,7 @@ export const fetchCoverImages = async (array: any[], config: Object = {}) => {
               config
             );
             const coverUrl = await getProxyImageUrl(
-              `/covers/${manga.id}/${response?.data?.attributes?.fileName}.512.jpg`
+              `covers/${manga.id}/${response?.data?.attributes?.fileName}.512.jpg`
             );
 
             Object.assign(manga, { cover: coverUrl });
