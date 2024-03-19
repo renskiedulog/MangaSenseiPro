@@ -10,7 +10,7 @@ export default function Home() {
       console.log(res);
       setMangas(res.data);
     });
-    fetch("/api/proxy").then((res) => console.log(res));
+    fetch("/api/manga").then((res) => console.log(res));
   }, []);
 
   return (
