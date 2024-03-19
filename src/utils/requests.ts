@@ -208,10 +208,10 @@ export const fetchAllChapters = async (mangaId: string) => {
     );
 
     const mangaChapters = response?.data;
-    const newChapters = [];
+    const newChapters: any = [];
     const seenChapterNumbers = new Set();
 
-    mangaChapters?.map((chapter) => {
+    mangaChapters?.map((chapter: any) => {
       const chapterNumber = parseInt(chapter.attributes.chapter);
       const pages = chapter.attributes.pages;
 
