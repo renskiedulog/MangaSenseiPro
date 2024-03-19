@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:3000";
+const baseUrl = "https://manga-sensei-pro.vercel.app";
 
 const makeRequest = async (
   endpoint: string,
