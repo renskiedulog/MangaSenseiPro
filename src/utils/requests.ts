@@ -1,4 +1,4 @@
-const baseUrl = "https://manga-sensei-pro.vercel.app";
+const baseUrl = "https://";
 
 const makeRequest = async (
   endpoint: string,
