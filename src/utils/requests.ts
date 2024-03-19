@@ -1,16 +1,24 @@
 const baseUrl = "https://api.mangadex.org";
 
+interface Params {
+  [key: string]: any;
+}
+
+interface Filter {
+  [key: string]: any;
+}
+
 export const makeRequest = async (
   endpoint: string,
-  params: Object = {},
-  filter: Object = {},
+  params: Params = {},
+  filter: Filter = {},
   config: Object = {}
 ): Promise<any> => {
   const url = new URL(`${baseUrl}${endpoint}`);
   Object.keys(params).forEach((key) => {
     // Check if the parameter is an array and format accordingly
     if (Array.isArray(params[key])) {
-      params[key].forEach((value) =>
+      params[key].forEach((value: any) =>
         url.searchParams.append(`${key}[]`, value)
       );
     } else {
