@@ -76,7 +76,10 @@ const MangaCarousel = () => {
       ref={carouselRef}
     >
       {carouselItems?.map((manga: any, index: number) => (
-        <Card className="relative min-h-[20rem] min-w-[100%] max-h-[22rem] snap-start overflow-hidden flex justify-center md:px-5 px-2 md:gap-5 gap-2 items-center dark:border-accent">
+        <Card
+          key={index}
+          className="relative min-h-[20rem] min-w-[100%] max-h-[22rem] snap-start overflow-hidden flex justify-center md:px-5 px-2 md:gap-5 gap-2 items-center dark:border-accent"
+        >
           {/* Background */}
           <Image
             src={manga.cover}
