@@ -1,4 +1,4 @@
-const baseUrl = "https://api.mangadex.org";
+const baseUrl = "https://api.mangadex.dev";
 
 interface Params {
   [key: string]: any;
@@ -174,7 +174,8 @@ export const Carousel = async () => {
 
   const array = [];
   for (let i = 0; i <= 6; i++) {
-    const randomIndex = Math.floor(Math.random() * req?.data?.length);
+    if (req?.length === 0) break;
+    const randomIndex: any = Math.floor(Math.random() * req?.data?.length);
     array.push(req?.data[randomIndex]);
     req.data.splice(randomIndex, 1);
   }
