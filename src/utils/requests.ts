@@ -43,9 +43,6 @@ export const makeRequest = async (
   }
 };
 
-export const getProxyImageUrl = (imageUrl: string) =>
-  `/image/${encodeURIComponent(imageUrl)}`;
-
 export const getFilter = async (filter: string) => {
   const includedTagNames = [filter];
   const tags = await makeRequest("/manga/tag");
@@ -70,7 +67,7 @@ export const fetchCoverImages = async (array: any[], config: Object = {}) => {
               {},
               config
             );
-            const coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${response?.data?.attributes?.fileName}.512.jpg`;
+            const coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${response?.data?.attributes?.fileName}.256.jpg`;
 
             Object.assign(manga, { cover: coverUrl });
             return manga;
