@@ -82,6 +82,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={400}
             alt="featured-image-alt"
             className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
+            priority
           />
           {/* Front */}
           <Image
@@ -89,9 +90,10 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={400}
             src={manga?.cover}
             alt="alt"
-            className="z-20 w-32 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
+            className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
+            priority
           />
-          <div className="z-20 w-7/12 md:w-full h-4/5 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 md:w-auto  h-4/5 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
@@ -124,7 +126,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               </h2>
               {/* Title */}
               <h1
-                className="text-xl md:text-3xl line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
+                className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
                 title={manga?.attributes?.title["en"]}
               >
                 {manga?.attributes?.title["en"]}

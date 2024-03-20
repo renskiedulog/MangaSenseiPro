@@ -241,3 +241,32 @@ export const getChapterImages = async (chapterId: string) => {
   );
   return req;
 };
+
+export const getFeaturedManga = async () => {
+  const storedFeatured = localStorage.getItem("featured");
+  if (storedFeatured) {
+    const { manga, date } = JSON.parse(storedFeatured);
+    const storedDate = new Date(date);
+    const currentDate = new Date();
+    if (
+      storedDate.getUTCDate() === currentDate.getUTCDate() &&
+      storedDate.getUTCMonth() === currentDate.getUTCMonth() &&
+      storedDate.getUTCFullYear() === currentDate.getUTCFullYear()
+    )
+      return manga[0];
+  }
+  const req = await makeRequest(
+    "/manga/",
+    { limit: 100 },
+    { followedCount: "desc", rating: "desc" }
+  );
+  const randomIndex = Math.floor(Math.random() * 100);
+  const newFeatured = await fetchCoverImages([req?.data[randomIndex]]);
+  const newFeaturedWithDate = {
+    manga: newFeatured,
+    date: new Date().toISOString().split("T")[0],
+  };
+
+  localStorage.setItem("featured", JSON.stringify(newFeaturedWithDate));
+  return newFeatured[0];
+};
