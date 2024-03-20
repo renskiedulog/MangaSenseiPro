@@ -5,6 +5,7 @@ import PopularMangas from "./../components/Components/PopularMangas";
 export default async function Home() {
   "use server";
   const carouselItems = await Carousel();
+  ("use server");
   const popular = await fetchTopMangas();
 
   return (

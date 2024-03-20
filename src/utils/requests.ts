@@ -86,7 +86,7 @@ export const fetchTopMangas = async () => {
       "/manga",
       { limit: 10 },
       { followedCount: "desc" },
-      { cache: "force-cache" }
+      { next: { revalidate: 3600 } }
     );
     const popularCover = await fetchCoverImages(popularReq?.data);
     const popularStats = await fetchStats(popularReq?.data);
@@ -97,7 +97,7 @@ export const fetchTopMangas = async () => {
       "/manga",
       { limit: 10 },
       { rating: "desc" },
-      { cache: "force-cache" }
+      { next: { revalidate: 3600 } }
     );
     const topRatedCover = await fetchCoverImages(topRatedReq?.data);
     const topRatedStats = await fetchStats(topRatedReq?.data);
