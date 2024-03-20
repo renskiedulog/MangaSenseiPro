@@ -5,11 +5,10 @@ import PopularMangas from "./../components/Components/PopularMangas";
 export default async function Home() {
   "use server";
   const carouselItems = await Carousel();
-  ("use server");
   const popular = await fetchTopMangas();
 
   return (
-    <main className="min-h-[90vh] grid grid-cols-1 md:grid-cols-[70%,30%] md:mx-5 mx-1 justify-center">
+    <main className="min-h-[90vh] grid grid-cols-1 py-2 md:grid-cols-[70%,30%] gap-2 md:mx-5 mx-1 justify-center">
       <div className="w-full h-screen">
         <MangaCarousel carouselItems={carouselItems} />
       </div>

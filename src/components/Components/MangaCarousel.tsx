@@ -67,7 +67,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
   return (
     <div
       id="carousel"
-      className="scrollbar-hidden flex overflow-x-auto pt-2 snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
+      className="scrollbar-hidden flex overflow-x-auto snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
       ref={carouselRef}
     >
       {carouselItems?.map((manga: any, index: number) => (
@@ -93,7 +93,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
             priority
           />
-          <div className="z-20 w-7/12 md:w-auto  h-4/5 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 md:w-full h-4/5 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">

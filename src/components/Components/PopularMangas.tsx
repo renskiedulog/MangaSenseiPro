@@ -3,6 +3,8 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Card } from "../ui/card";
 import Image from "next/image";
+import { Button } from "../ui/button";
+import { StarIcon } from "lucide-react";
 
 const PopularMangas = ({ mangas }: { mangas: any }) => {
   const [toggle, setToggle]: any = useState(true);
@@ -22,29 +24,29 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
   };
 
   return (
-    <Card className="shadow-none bg-[#121212] color-text h-max w-full overflow-hidden rounded-md border-accent">
-      <header key="header" className="flex border-b-[1px] border-accent">
-        <button
-          className={`px-3  py-2 ${toggle ? "text-purple-500" : ""}`}
+    <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
+      <header key="header" className="flex items-center border-b border-accent">
+        <Button
+          variant={`${toggle ? "secondary" : "ghost"}`}
+          className={`px-3 rounded-none py-2 ${toggle ? "text-blue-500" : ""}`}
           onClick={() => handleToggle(true)}
         >
           Popular
-        </button>
-        <button
-          className={`px-3 py-2 ${!toggle ? "text-purple-500" : ""}`}
+        </Button>
+        <Button
+          variant={`${!toggle ? "secondary" : "ghost"}`}
+          className={`px-3 rounded-none py-2 ${!toggle ? "text-blue-500" : ""}`}
           onClick={() => handleToggle(false)}
         >
           Top Rated
-        </button>
+        </Button>
       </header>
       {/* Mangas */}
       {displayed?.manga?.map((manga: any, index: number) => {
         return (
-          <div
+          <Card
             key={index}
-            className={`flex my-1 gap-2 p-2 ${
-              index === 0 ? "" : "border-t border-[#fff1]"
-            }`}
+            className={`flex shadow-none bg-transparent border-t-0 border-x-0 border-b-2 rounded-none border-accent gap-2 p-2`}
           >
             {/* <Image
               priority
@@ -59,16 +61,20 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
               href={`/manga/${manga?.id}`}
               className="flex items-center justify-center z-10"
             >
-              <img
+              <Image
+                height={400}
+                width={300}
+                priority
+                alt="top-manga-cover"
                 className="h-auto w-20 max-w-20 place-self-center rounded object-cover"
                 src={manga?.cover}
               />
             </Link>
-            <div className="flex flex-col justify-around z-10 text-white">
+            <div className="flex flex-col justify-between z-10 text-primary">
               <Link
                 href={`/manga/${manga?.id}`}
                 key={manga?.attributes.title["en"]}
-                className="line-clamp-2 text-lg hover:text-purple-500 font-bold"
+                className="line-clamp-2 text-lg hover:text-blue-500 font-bold"
               >
                 {manga?.attributes.title["en"] ||
                   manga?.attributes.title["ja-ro"]}
@@ -82,7 +88,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                         <Link
                           key={index}
                           href="#"
-                          className="hover:text-purple-500"
+                          className="hover:text-blue-500"
                         >
                           {tag.attributes.name["en"]}
                           {index !== 5 && ","}
@@ -96,21 +102,17 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                 <p className="text-xs opacity-75 md:text-sm">
                   {toggle ? "Follows:" : "Rating:"}
                 </p>
+                {!toggle && (
+                  <StarIcon className="size-5 fill-yellow-500 stroke-none" />
+                )}
                 <p className="text-xs md:text-sm">
                   {toggle
                     ? displayed?.stats[index].follows
                     : displayed?.stats[index]?.rating?.average.toFixed(2)}
                 </p>
-                {!toggle && (
-                  <img
-                    src="/images/star.png"
-                    alt="rating"
-                    className="aspect-auto w-5 translate-y-[-1px]"
-                  />
-                )}
               </div>
             </div>
-          </div>
+          </Card>
         );
       })}
     </Card>
