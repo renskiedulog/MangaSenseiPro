@@ -169,7 +169,7 @@ export const Carousel = async () => {
     "/manga",
     { limit: 100 },
     { followedCount: "desc" },
-    { cache: "force-cache" }
+    { cache: "no-store" }
   );
 
   const array = [];
@@ -179,7 +179,7 @@ export const Carousel = async () => {
     req.data.splice(randomIndex, 1);
   }
 
-  const mangas = await fetchCoverImages(array, { cache: "force-cache" });
+  const mangas = await fetchCoverImages(array, { cache: "no-store" });
 
   return mangas;
 };
