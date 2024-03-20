@@ -23,7 +23,7 @@ import SearchBar from "./SearchBar";
 
 const NavigationBar = () => {
   return (
-    <NavigationMenu className="fixed top-0 max-w-none w-full justify-between border-b border-border bg-background left-0 h-[3.5rem] md:px-10 px-5">
+    <NavigationMenu className="fixed top-0 z-50 max-w-none w-full justify-between border-b border-border bg-background left-0 h-[3.5rem] md:px-10 px-5">
       <NavigationMenuList>
         <Link href="#" className="font-bold text-lg">
           MangaSensei

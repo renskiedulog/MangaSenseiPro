@@ -14,6 +14,9 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
     suggestive: "bg-[#AC87C5]",
     pornographic: "bg-[crimson]",
     erotica: "bg-[#FF004D]",
+    completed: "bg-[orange]",
+    ongoing: "bg-[green]",
+    cancelled: "bg-[red]",
   };
 
   useEffect(() => {
@@ -64,13 +67,13 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
   return (
     <div
       id="carousel"
-      className="scrollbar-hidden flex overflow-x-auto pt-2 snap-x snap-mandatory overflow-y-hidden max-h-[20rem]"
+      className="scrollbar-hidden flex overflow-x-auto pt-2 snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
       ref={carouselRef}
     >
       {carouselItems?.map((manga: any, index: number) => (
         <Card
           key={index}
-          className="relative min-w-[100%] snap-start overflow-hidden flex justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
+          className="relative min-w-[100%] snap-start overflow-hidden flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
         >
           {/* Background */}
           <Image
@@ -86,9 +89,9 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={400}
             src={manga?.cover}
             alt="alt"
-            className="z-20 w-32 md:w-36 md:h-4/5 object-cover rounded-md"
+            className="z-20 w-32 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
           />
-          <div className="z-20 w-8/12 md:w-full h-4/5 flex flex-col md:px-0 px-1 justify-between">
+          <div className="z-20 w-7/12 md:w-full h-4/5 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
@@ -110,6 +113,13 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                   }`}
                 >
                   {manga?.attributes?.contentRating}
+                </p>
+                <p
+                  className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem] ${
+                    contentTypeBg[manga?.attributes?.status?.toLowerCase()]
+                  }`}
+                >
+                  {manga?.attributes?.status?.toUpperCase()}
                 </p>
               </h2>
               {/* Title */}
@@ -148,20 +158,20 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             </div>
             {/* Statistics */}
             <div className="flex items-center justify-between justify-self-end flex-wrap">
-              <div className="flex items-center gap-2 text-white">
-                <Button className="bg-[#fff3] hover:bg-blue-500" size="sm">
+              <div className="flex items-center gap-2">
+                <Button
+                  className="bg-[#fff3] text-white hover:bg-blue-500"
+                  size="sm"
+                >
                   <BookmarkIcon />
                 </Button>
                 <Button
-                  className="min-w-32 bg-[#fff3] hover:bg-blue-500"
+                  className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
                   size="sm"
                 >
                   Read
                 </Button>
               </div>
-              <h1 className="flex gap-1 items-center text-white font-bold text-sm w-full py-1 md:w-auto">
-                Status: <span>{manga?.attributes?.status?.toUpperCase()}</span>
-              </h1>
             </div>
           </div>
         </Card>
