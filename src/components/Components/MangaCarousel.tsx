@@ -1,6 +1,7 @@
 import { Carousel, fetchCoverImages, makeRequest } from "@/utils/requests";
 import { Card } from "../ui/card";
 import Link from "next/link";
+import Image from "next/image";
 const MangaCarousel = async () => {
   "use server";
   const featured = await Carousel();
@@ -16,13 +17,17 @@ const MangaCarousel = async () => {
     <section id="carousel" className="grid grid-cols-[70%,30%] pt-2">
       <Card className="relative min-h-[20rem] max-h-[22rem] w-full overflow-hidden flex justify-center md:px-5 px-2 md:gap-5 gap-2 items-center">
         {/* Background */}
-        <img
+        <Image
           src={featured[0].cover}
+          height={500}
+          width={400}
           alt="featured-image-alt"
           className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
         />
         {/* Front */}
-        <img
+        <Image
+          height={500}
+          width={400}
           src={featured[0]?.cover}
           alt="alt"
           className="z-20 w-1/5 h-4/5 object-cover rounded-md m-auto"
