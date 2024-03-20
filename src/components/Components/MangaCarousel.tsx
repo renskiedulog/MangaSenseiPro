@@ -39,7 +39,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             });
           }
         }
-      }, 10000);
+      }, 600000);
     };
 
     const handleScroll = () => {
@@ -64,13 +64,13 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
   return (
     <div
       id="carousel"
-      className="scrollbar-hidden flex overflow-x-auto pt-2 snap-x snap-mandatory overflow-y-hidden"
+      className="scrollbar-hidden flex overflow-x-auto pt-2 snap-x snap-mandatory overflow-y-hidden max-h-[20rem]"
       ref={carouselRef}
     >
       {carouselItems?.map((manga: any, index: number) => (
         <Card
           key={index}
-          className="relative min-h-[20rem] min-w-[100%] max-h-[22rem] snap-start overflow-hidden flex justify-center md:px-5 px-2 md:gap-5 gap-2 items-center dark:border-accent"
+          className="relative min-w-[100%] snap-start overflow-hidden flex justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
         >
           {/* Background */}
           <Image
@@ -86,10 +86,10 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={400}
             src={manga?.cover}
             alt="alt"
-            className="z-20 min-w-20 md:w-1/6 md:h-4/5 h-auto object-cover rounded-md m-auto"
+            className="z-20 w-32 md:w-36 md:h-4/5 object-cover rounded-md"
           />
-          <div className="z-20 w-4/5 h-4/5 flex flex-col justify-between">
-            <div>
+          <div className="z-20 w-8/12 md:w-full h-4/5 flex flex-col md:px-0 px-1 justify-between">
+            <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
                 <p
@@ -114,7 +114,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               </h2>
               {/* Title */}
               <h1
-                className="text-3xl line-clamp-1 text-white shadow-sm font-bold"
+                className="text-xl md:text-3xl line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
                 title={manga?.attributes?.title["en"]}
               >
                 {manga?.attributes?.title["en"]}
@@ -141,13 +141,13 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               {/* Summary */}
               <div className="py-2 text-sm font-semibold text-white md:text-base">
                 <h5>Summary</h5>
-                <p className="text-sm opacity-70 font-normal w-full whitespace-nowrap py-1 text-wrap mx-auto line-clamp-5 leading-5">
+                <p className="text-xs md:text-sm opacity-70 font-normal w-full whitespace-nowrap pt-1 text-wrap mx-auto line-clamp-5 leading-tight md:leading-5">
                   {manga?.attributes?.description["en"]}
                 </p>
               </div>
             </div>
             {/* Statistics */}
-            <div className="flex items-center justify-between justify-self-end">
+            <div className="flex items-center justify-between justify-self-end flex-wrap">
               <div className="flex items-center gap-2 text-white">
                 <Button className="bg-[#fff3] hover:bg-blue-500" size="sm">
                   <BookmarkIcon />
@@ -159,7 +159,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                   Read
                 </Button>
               </div>
-              <h1 className="flex gap-1 items-center text-white font-bold text-sm">
+              <h1 className="flex gap-1 items-center text-white font-bold text-sm w-full py-1 md:w-auto">
                 Status: <span>{manga?.attributes?.status?.toUpperCase()}</span>
               </h1>
             </div>
