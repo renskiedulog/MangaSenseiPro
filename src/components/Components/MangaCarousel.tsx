@@ -93,7 +93,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
             priority
           />
-          <div className="z-20 w-7/12 md:w-full h-4/5 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
@@ -102,40 +102,40 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                 >
                   {manga?.type}
                 </p>
-                {manga?.attributes?.publicationDemographic && (
+                {manga?.publicationDemographic && (
                   <p
                     className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem]`}
                   >
-                    {manga?.attributes?.publicationDemographic}
+                    {manga?.publicationDemographic}
                   </p>
                 )}
                 <p
                   className={`w-min rounded px-1 py-[2px] text-[.6rem] ${
-                    contentTypeBg[manga?.attributes?.contentRating]
+                    contentTypeBg[manga?.contentRating]
                   }`}
                 >
-                  {manga?.attributes?.contentRating}
+                  {manga?.contentRating}
                 </p>
                 <p
                   className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem] ${
-                    contentTypeBg[manga?.attributes?.status?.toLowerCase()]
+                    contentTypeBg[manga?.status?.toLowerCase()]
                   }`}
                 >
-                  {manga?.attributes?.status?.toUpperCase()}
+                  {manga?.status?.toUpperCase()}
                 </p>
               </h2>
               {/* Title */}
               <h1
                 className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
-                title={manga?.attributes?.title["en"]}
+                title={manga?.title["en"]}
               >
-                {manga?.attributes?.title["en"]}
+                {manga?.title["en"]}
               </h1>
               {/* Genres */}
               <div className="h-5 w-5/6 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white md:text-sm">
-                {manga?.attributes?.tags?.map((tag: any, index: number) => {
+                {manga?.tags?.map((tag: any, index: number) => {
                   const isLastTag =
-                    index === manga?.attributes?.tags?.length - 1;
+                    index === manga?.tags?.length - 1;
                   if (index <= 5) {
                     return (
                       <Link
@@ -143,7 +143,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                         key={index}
                         className="mr-1 hover:text-blue-500 opacity-80 hover:opacity-100"
                       >
-                        {tag.attributes.name["en"]}
+                        {tag?.attributes?.name["en"]}
                         {!isLastTag && index !== 5 && ","}
                       </Link>
                     );
@@ -154,7 +154,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               <div className="py-2 text-sm font-semibold text-white md:text-base">
                 <h5>Summary</h5>
                 <p className="text-xs md:text-sm opacity-70 font-normal w-full whitespace-nowrap pt-1 text-wrap mx-auto line-clamp-5 leading-tight md:leading-5">
-                  {manga?.attributes?.description["en"]}
+                  {manga?.description["en"]}
                 </p>
               </div>
             </div>

@@ -22,7 +22,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
   const handleToggle = (toggle: any) => {
     setToggle(toggle);
   };
-
+  
   return (
     <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
       <header key="header" className="flex items-center border-b border-accent">
@@ -73,16 +73,16 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
             <div className="flex flex-col justify-between z-10 text-primary">
               <Link
                 href={`/manga/${manga?.id}`}
-                key={manga?.attributes.title["en"]}
+                key={manga.title["en"]}
                 className="line-clamp-2 text-lg hover:text-blue-500 font-bold"
               >
-                {manga?.attributes.title["en"] ||
-                  manga?.attributes.title["ja-ro"]}
+                {manga.title["en"] ||
+                  manga.title["ja-ro"]}
               </Link>
               <div className="flex gap-1 text-sm">
                 <p className="opacity-75">Genres:</p>
                 <div className="flex h-12 flex-wrap gap-1 overflow-hidden whitespace-nowrap break-all opacity-100">
-                  {manga?.attributes?.tags?.map((tag: any, index: number) => {
+                  {manga?.tags?.map((tag: any, index: number) => {
                     if (index <= 5) {
                       return (
                         <Link
@@ -90,7 +90,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                           href="#"
                           className="hover:text-blue-500"
                         >
-                          {tag.attributes.name["en"]}
+                          {tag?.attributes?.name["en"]}
                           {index !== 5 && ","}
                         </Link>
                       );
@@ -107,8 +107,8 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                 )}
                 <p className="text-xs md:text-sm">
                   {toggle
-                    ? displayed?.stats[index].follows
-                    : displayed?.stats[index]?.rating?.average.toFixed(2)}
+                    ? displayed?.stats[index]
+                    : displayed?.stats[index].toFixed(2)}
                 </p>
               </div>
             </div>

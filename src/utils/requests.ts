@@ -1,3 +1,5 @@
+import { Manga } from "./types";
+
 const baseUrl = "https://api.mangadex.dev";
 
 interface Params {
@@ -12,7 +14,7 @@ export const makeRequest = async (
   endpoint: string,
   params: Params = {},
   filter: Filter = {},
-  config: Object = { cache: "no-store" }
+  config: Object = { }
 ): Promise<any> => {
   const url = new URL(`${baseUrl}${endpoint}`);
   Object.keys(params).forEach((key) => {
@@ -30,7 +32,6 @@ export const makeRequest = async (
   for (const [key, value] of Object.entries(order)) {
     url.searchParams.append(`order[${key}]`, value);
   }
-
   try {
     const res = await fetch(url, config);
     if (!res.ok) {
@@ -88,10 +89,18 @@ export const fetchTopMangas = async () => {
       { followedCount: "desc" },
       { next: { revalidate: 3600 } }
     );
-    const popularCover = await fetchCoverImages(popularReq?.data);
-    const popularStats = await fetchStats(popularReq?.data);
 
-    const popular = { stats: popularStats, manga: popularCover };
+    const popularCover = await fetchCoverImages(popularReq?.data);
+    const returnedPopular: Manga[] = popularCover.map((manga) => ({
+      id: manga.id,
+      title: manga.attributes.title,
+      tags: manga.attributes.tags,
+      cover: manga.cover,
+    }));
+
+    const popularStats = await fetchStats(popularReq?.data);
+    
+    const popular = { stats: popularStats.map(stat => stat.follows), manga: returnedPopular };
 
     const topRatedReq = await makeRequest(
       "/manga",
@@ -100,9 +109,16 @@ export const fetchTopMangas = async () => {
       { next: { revalidate: 3600 } }
     );
     const topRatedCover = await fetchCoverImages(topRatedReq?.data);
+    const returnedTopRated: Manga[] = topRatedCover.map((manga) => ({
+      id: manga.id,
+      tags: manga.attributes.tags,
+      cover: manga.cover,
+      title: manga.attributes.title,
+    }));
+
     const topRatedStats = await fetchStats(topRatedReq?.data);
 
-    const topRated = { stats: topRatedStats, manga: topRatedCover };
+    const topRated = { stats: topRatedStats.map(stat => stat.rating.average), manga: returnedTopRated };
 
     return { popular, topRated };
   } catch (err) {
@@ -180,9 +196,21 @@ export const Carousel = async () => {
     req.data.splice(randomIndex, 1);
   }
 
-  const mangas = await fetchCoverImages(array, { cache: "no-store" });
+  const mangas: Manga[] = await fetchCoverImages(array, { cache: "force-cache" });
 
-  return mangas;
+  const returnObject: Manga[] = mangas.map((manga) => ({
+    id: manga.id,
+    tags: manga.attributes.tags,
+    contentRating: manga.attributes.contentRating,
+    publicationDemographic: manga.attributes.publicationDemographic,
+    status: manga.attributes.status,
+    description: manga.attributes.description,
+    type: manga.type,
+    title: manga.attributes.title,
+    cover: manga.cover,
+  }));
+
+  return returnObject;
 };
 
 export const getRandomManga = async () => {
@@ -240,4 +268,28 @@ export const getChapterImages = async (chapterId: string) => {
     { cache: "force-cache" }
   );
   return req;
+};
+
+export const getLatestMangas = async () => {
+  const reqLatestMangas = await makeRequest(
+    "/manga",
+    {
+      limit: 40,
+    },
+    {},
+    { next: { revalidate: 60 } }
+  );
+
+  const latestMangas = await fetchCoverImages(reqLatestMangas?.data, {
+    cache: "force-cache",
+  });
+
+  const returnObject: Manga[] = latestMangas.map((manga) => ({
+    id: manga.id,
+    updatedAt: manga.attributes.updatedAt,
+    title: manga.attributes.title,
+    cover: manga.cover,
+  }));
+
+  return returnObject;
 };
