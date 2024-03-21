@@ -14,11 +14,10 @@ export const makeRequest = async (
   endpoint: string,
   params: Params = {},
   filter: Filter = {},
-  config: Object = { }
+  config: Object = {}
 ): Promise<any> => {
   const url = new URL(`${baseUrl}${endpoint}`);
   Object.keys(params).forEach((key) => {
-    // Check if the parameter is an array and format accordingly
     if (Array.isArray(params[key])) {
       params[key].forEach((value: any) =>
         url.searchParams.append(`${key}[]`, value)
@@ -90,8 +89,8 @@ export const fetchTopMangas = async () => {
       { next: { revalidate: 3600 } }
     );
 
-    const popularCover = await fetchCoverImages(popularReq?.data);
-    const returnedPopular: Manga[] = popularCover.map((manga) => ({
+    const popularCover: any = await fetchCoverImages(popularReq?.data);
+    const returnedPopular: Manga[] = popularCover.map((manga: any) => ({
       id: manga.id,
       title: manga.attributes.title,
       tags: manga.attributes.tags,
@@ -99,8 +98,11 @@ export const fetchTopMangas = async () => {
     }));
 
     const popularStats = await fetchStats(popularReq?.data);
-    
-    const popular = { stats: popularStats.map(stat => stat.follows), manga: returnedPopular };
+
+    const popular = {
+      stats: popularStats.map((stat) => stat.follows),
+      manga: returnedPopular,
+    };
 
     const topRatedReq = await makeRequest(
       "/manga",
@@ -108,8 +110,8 @@ export const fetchTopMangas = async () => {
       { rating: "desc" },
       { next: { revalidate: 3600 } }
     );
-    const topRatedCover = await fetchCoverImages(topRatedReq?.data);
-    const returnedTopRated: Manga[] = topRatedCover.map((manga) => ({
+    const topRatedCover: any = await fetchCoverImages(topRatedReq?.data);
+    const returnedTopRated: Manga[] = topRatedCover.map((manga: any) => ({
       id: manga.id,
       tags: manga.attributes.tags,
       cover: manga.cover,
@@ -118,7 +120,10 @@ export const fetchTopMangas = async () => {
 
     const topRatedStats = await fetchStats(topRatedReq?.data);
 
-    const topRated = { stats: topRatedStats.map(stat => stat.rating.average), manga: returnedTopRated };
+    const topRated = {
+      stats: topRatedStats.map((stat) => stat.rating.average),
+      manga: returnedTopRated,
+    };
 
     return { popular, topRated };
   } catch (err) {
@@ -196,9 +201,9 @@ export const Carousel = async () => {
     req.data.splice(randomIndex, 1);
   }
 
-  const mangas: Manga[] = await fetchCoverImages(array, { cache: "force-cache" });
+  const mangas: any = await fetchCoverImages(array, { cache: "force-cache" });
 
-  const returnObject: Manga[] = mangas.map((manga) => ({
+  const returnObject: Manga[] = mangas.map((manga: any) => ({
     id: manga.id,
     tags: manga.attributes.tags,
     contentRating: manga.attributes.contentRating,
@@ -280,11 +285,11 @@ export const getLatestMangas = async () => {
     { next: { revalidate: 60 } }
   );
 
-  const latestMangas = await fetchCoverImages(reqLatestMangas?.data, {
+  const latestMangas: any = await fetchCoverImages(reqLatestMangas?.data, {
     cache: "force-cache",
   });
 
-  const returnObject: Manga[] = latestMangas.map((manga) => ({
+  const returnObject: Manga[] = latestMangas.map((manga: any) => ({
     id: manga.id,
     updatedAt: manga.attributes.updatedAt,
     title: manga.attributes.title,
