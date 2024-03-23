@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
+  
   const carouselRef: any = useRef(null);
 
   const contentTypeBg: any = {
@@ -127,24 +128,24 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               {/* Title */}
               <h1
                 className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
-                title={manga?.title["en"]}
+                title={manga?.title["en"] || manga?.title["ja-ro"]}
               >
-                {manga?.title["en"]}
+                {manga?.title["en"] || manga?.title["ja-ro"] }
               </h1>
               {/* Genres */}
-              <div className="h-5 w-5/6 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white md:text-sm">
+              <div className="md:text-sm md:h-auto max-h-8 overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">
                 {manga?.tags?.map((tag: any, index: number) => {
                   const isLastTag =
                     index === manga?.tags?.length - 1;
-                  if (index <= 5) {
+                  if (index <= 4) {
                     return (
                       <Link
                         href="#"
                         key={index}
-                        className="mr-1 hover:text-blue-500 opacity-80 hover:opacity-100"
+                        className="mr-1 w-auto hover:text-blue-500 opacity-80 hover:opacity-100"
                       >
                         {tag?.attributes?.name["en"]}
-                        {!isLastTag && index !== 5 && ","}
+                        {!isLastTag && index !== 4 && ","}
                       </Link>
                     );
                   }
