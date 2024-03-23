@@ -1,140 +1,150 @@
-import { Manga } from "./types";
-
-const baseUrl = "https://api.mangadex.dev";
-
-interface Params {
-  [key: string]: any;
-}
-
-interface Filter {
-  [key: string]: any;
-}
-
-export const makeRequest = async (
-  endpoint: string,
-  params: Params = {},
-  filter: Filter = {},
-  config: Object = {}
-): Promise<any> => {
-  const url = new URL(`${baseUrl}${endpoint}`);
-  Object.keys(params).forEach((key) => {
-    if (Array.isArray(params[key])) {
-      params[key].forEach((value: any) =>
-        url.searchParams.append(`${key}[]`, value)
-      );
-    } else {
-      url.searchParams.append(key, params[key]);
-    }
-  });
-
-  const order = { ...filter };
-  for (const [key, value] of Object.entries(order)) {
-    url.searchParams.append(`order[${key}]`, value);
-  }
-  try {
-    const res = await fetch(url, config);
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
-    return res?.json();
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return [];
-  }
+type Primitives = string | number | boolean | Date;
+type KeyValue<T = string> = { [key: string]: T };
+type QueryParam = {
+  [key: string]: Primitives | string[] | KeyValue<"asc" | "desc">;
 };
 
-export const getFilter = async (filter: string) => {
-  const includedTagNames = [filter];
-  const tags = await makeRequest("/manga/tag");
-  const includedTagIDs = tags?.data?.data
-    .filter((tag: any) => includedTagNames.includes(tag.attributes.name.en))
-    .map((tag: any) => tag.id);
-
-  return includedTagIDs;
+type MDCol<T = MDEntity<any>> = {
+  result: "ok" | "error";
+  response: "collection" | string;
+  data: T[];
+  limit: number;
+  offset: number;
+  total: number;
 };
 
-export const fetchCoverImages = async (array: any[], config: Object = {}) => {
-  const coverImages = await Promise.all(
-    array.flatMap(async (manga) => {
-      const coverRelationships = manga?.relationships?.filter(
-        (rel: any) => rel.type === "cover_art"
-      );
-      const coverPromises = coverRelationships
-        ? coverRelationships.map(async (rel: any) => {
-            const response = await makeRequest(
-              `/cover/${rel?.id}`,
-              {},
-              {},
-              config
-            );
-            const coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${response?.data?.attributes?.fileName}.256.jpg`;
+type MDEntity<T, Type = string> = {
+  id: string;
+  type: Type;
+  attributes?: T;
+  relationships?: Entities[];
+};
 
-            Object.assign(manga, { cover: coverUrl });
-            return manga;
-          })
-        : [];
-      return Promise.all(coverPromises);
-    })
+type MDChapter = MDEntity<
+  {
+    volumne?: string;
+    chapter?: string;
+    title?: string;
+    translatedLanguage: string;
+    externalUrl?: string;
+    publishAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    pages: number;
+    version: number;
+  },
+  "chapter"
+>;
+
+type MDTag = MDEntity<
+  {
+    name: KeyValue;
+    description: KeyValue;
+    group: string;
+    version: number;
+  },
+  "tag"
+>;
+
+type MDManga = MDEntity<
+  {
+    title: KeyValue;
+    altTitles: KeyValue[];
+    description: KeyValue;
+    isLocked: boolean;
+    links: KeyValue;
+    originalLanguage: string;
+    lastVolume?: string;
+    lastChapter?: string;
+    publicationDemographic?: string;
+    status: string;
+    year?: number;
+    contentRating?: string;
+    tags: MDTag[];
+    state: string;
+    chapterNumbersResetOnNewVolume: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    availableTranslatedLanguages: string[];
+    latestUploadedChapter: string;
+  },
+  "manga"
+>;
+
+type MDCoverArt = MDEntity<
+  {
+    description: string;
+    volume: string;
+    fileName: string;
+    locale: string;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+  },
+  "cover_art"
+>;
+
+type Entities = MDChapter | MDManga | MDTag | MDCoverArt;
+
+type OutputModel = {
+  manga: MDManga;
+  chapter: MDChapter;
+};
+
+const fetchJson = async <T = any>(
+  url: string,
+  params?: QueryParam,
+  options?: Object
+) => {
+  const serializeParameters = (params?: QueryParam) => {
+    if (!params) return "";
+
+    return Object.keys(params)
+      .map((key) => {
+        const value: any = params[key];
+        if (Array.isArray(value)) {
+          return value.map((val) => `${key}[]=${val}`).join("&");
+        }
+        if (typeof value === "object") {
+          return Object.keys(value)
+            .map((k) => `${key}[${k}]=${value[k]}`)
+            .join("&");
+        }
+        return `${key}=${value}`;
+      })
+      .join("&");
+  };
+
+  const pars = serializeParameters(params);
+  const uri = `https://api.mangadex.org/${url}?${pars}`;
+  const response = await fetch(uri, options);
+
+  if (!response.ok)
+    throw new Error(
+      `Failed to fetch ${uri}: ${response.status} ${response.statusText}`
+    );
+
+  return <T>await response?.json();
+};
+
+const fetchCovers = (ids: string[], offset = 0, limit = 100) => {
+  return fetchJson<MDCol<MDManga>>(
+    "manga",
+    {
+      ids: ids,
+      includes: ['cover_art', 'author', 'artist', 'tag', 'user', 'scanlation_group'],
+      offset,
+      limit,
+    },
+    { cache: "force-cache" }
   );
-
-  return coverImages.flat();
-};
-
-export const fetchTopMangas = async () => {
-  try {
-    const popularReq = await makeRequest(
-      "/manga",
-      { limit: 10 },
-      { followedCount: "desc" },
-      { next: { revalidate: 3600 } }
-    );
-
-    const popularCover: any = await fetchCoverImages(popularReq?.data);
-    const returnedPopular: Manga[] = popularCover.map((manga: any) => ({
-      id: manga.id,
-      title: manga.attributes.title,
-      tags: manga.attributes.tags,
-      cover: manga.cover,
-    }));
-
-    const popularStats = await fetchStats(popularReq?.data);
-
-    const popular = {
-      stats: popularStats.map((stat) => stat.follows),
-      manga: returnedPopular,
-    };
-
-    const topRatedReq = await makeRequest(
-      "/manga",
-      { limit: 10 },
-      { rating: "desc" },
-      { next: { revalidate: 3600 } }
-    );
-    const topRatedCover: any = await fetchCoverImages(topRatedReq?.data);
-    const returnedTopRated: Manga[] = topRatedCover.map((manga: any) => ({
-      id: manga.id,
-      tags: manga.attributes.tags,
-      cover: manga.cover,
-      title: manga.attributes.title,
-    }));
-
-    const topRatedStats = await fetchStats(topRatedReq?.data);
-
-    const topRated = {
-      stats: topRatedStats.map((stat) => stat.rating.average),
-      manga: returnedTopRated,
-    };
-
-    return { popular, topRated };
-  } catch (err) {
-    console.log(err);
-  }
 };
 
 export const fetchStats = async (array: any[]) => {
   const stats = await Promise.all(
     array.map(async (manga) => {
-      const response = await makeRequest(`/statistics/manga/${manga?.id}`);
+      const response = await fetchJson(`/statistics/manga/${manga?.id}`, {}, { cache: 'force-cache'});
       return response?.statistics[manga?.id];
     })
   );
@@ -142,159 +152,137 @@ export const fetchStats = async (array: any[]) => {
   return stats;
 };
 
-export const fetchMangaInfo = async (mangaId: string) => {
-  const req = await makeRequest(`/manga/${mangaId}`);
-  const cover = await fetchCoverImages([req.data]);
-  const stats = await makeRequest(`/statistics/manga/${mangaId}`);
-
-  Object?.assign(cover[0], { stats: stats?.statistics[mangaId] });
-  return cover[0];
+const fetchLatestChapters = (offset = 0, limit = 100) => {
+  return fetchJson<MDCol<MDChapter>>("chapter", {
+    offset,
+    limit,
+    translatedLanguage: ["en"],
+    order: { updatedAt: "desc" },
+    includeExternalUrl: 0,
+  });
 };
 
-export function timeAgo(dateString: string) {
-  const providedDate: any = new Date(dateString);
-  const now: any = new Date();
-
-  const timeDifferenceInSeconds = Math.floor((now - providedDate) / 1000);
-
-  if (providedDate > now) {
-    return null;
-  }
-
-  if (timeDifferenceInSeconds < 60) {
-    return `${timeDifferenceInSeconds} second${
-      timeDifferenceInSeconds !== 1 ? "s" : ""
-    } ago`;
-  } else if (timeDifferenceInSeconds < 3600) {
-    const minutesAgo = Math.floor(timeDifferenceInSeconds / 60);
-    return `${minutesAgo} minute${minutesAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 86400) {
-    const hoursAgo = Math.floor(timeDifferenceInSeconds / 3600);
-    return `${hoursAgo} hour${hoursAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 2592000) {
-    // Less than 30 days (approx. a month)
-    const daysAgo = Math.floor(timeDifferenceInSeconds / 86400);
-    return `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 31536000) {
-    // Less than 365 days (approx. a year)
-    const monthsAgo = Math.floor(timeDifferenceInSeconds / 2592000);
-    return `${monthsAgo} month${monthsAgo !== 1 ? "s" : ""} ago`;
-  } else {
-    const yearsAgo = Math.floor(timeDifferenceInSeconds / 31536000);
-    return `${yearsAgo} year${yearsAgo !== 1 ? "s" : ""} ago`;
-  }
-}
-
-export const Carousel = async () => {
-  const req = await makeRequest(
-    "/manga",
-    { limit: 100 },
-    { followedCount: "desc" },
-    { cache: "no-store" }
+export const getLatestManga = async () => {
+  const chapters = await fetchLatestChapters();
+  const mangaIds = <string[]>(
+    chapters.data
+      .map((c) => c.relationships?.find((t) => t.type === "manga")?.id)
+      .filter((t) => !!t)
   );
+  const manga = await fetchCovers(mangaIds);
 
-  const array = [];
-  for (let i = 0; i <= 6; i++) {
-    if (req?.length === 0) break;
-    const randomIndex: any = Math.floor(Math.random() * req?.data?.length);
-    array.push(req?.data[randomIndex]);
-    req.data.splice(randomIndex, 1);
-  }
+  let output: OutputModel[] = [];
 
-  const mangas: any = await fetchCoverImages(array, { cache: "force-cache" });
+  for (const chapter of chapters.data) {
+    for (const rel of chapter.relationships ?? []) {
+      if (rel.type !== "manga") continue;
 
-  const returnObject: Manga[] = mangas.map((manga: any) => ({
-    id: manga.id,
-    tags: manga.attributes.tags,
-    contentRating: manga.attributes.contentRating,
-    publicationDemographic: manga.attributes.publicationDemographic,
-    status: manga.attributes.status,
-    description: manga.attributes.description,
-    type: manga.type,
-    title: manga.attributes.title,
-    cover: manga.cover,
-  }));
-
-  return returnObject;
-};
-
-export const getRandomManga = async () => {
-  const randomManga = await makeRequest("/manga/random");
-  const id = await randomManga?.data?.id;
-  return id;
-};
-
-export const fetchAllChapters = async (mangaId: string) => {
-  let page = 1;
-  const allChapters = [];
-
-  while (true) {
-    const response = await makeRequest(
-      `/manga/${mangaId}/feed`,
-      {
-        translatedLanguage: ["en"],
-        limit: 500,
-        offset: (page - 1) * 500,
-      },
-      {
-        chapter: "desc",
+      const existing = manga.data.find((m) => m.id === rel.id);
+      if (!existing) {
+        console.log("Manga not found:", rel.id);
+        continue;
       }
-    );
 
-    const mangaChapters = response?.data;
-    const newChapters: any = [];
-    const seenChapterNumbers = new Set();
-
-    mangaChapters?.map((chapter: any) => {
-      const chapterNumber = parseInt(chapter.attributes.chapter);
-      const pages = chapter.attributes.pages;
-
-      if (pages > 0 && !seenChapterNumbers.has(chapterNumber)) {
-        newChapters.push(chapter);
-        seenChapterNumbers.add(chapterNumber);
-      }
-    });
-
-    if (mangaChapters && mangaChapters.length > 0) {
-      allChapters.push(...newChapters);
-      page++;
-    } else {
-      break; // No more chapters to fetch
+      output.push({
+        manga: existing,
+        chapter: chapter,
+      });
     }
   }
-  return allChapters;
+
+  return output;
 };
 
-export const getChapterImages = async (chapterId: string) => {
-  const req = await makeRequest(
-    `/at-home/server/${chapterId}`,
-    {},
-    {},
-    { cache: "force-cache" }
-  );
-  return req;
+export const Carousel = async () => {
+  try {
+    let req = await fetchJson<MDCol<MDChapter>>("manga", {
+      limit: 100,
+      order: { followedCount: "desc", rating: "desc" },
+    });
+    let mangaIds = req?.data?.map((m) => m?.id);
+    let manga = await fetchCovers(mangaIds);
+
+    const getRandomManga = (mangaData: MDCol, count: number) => {
+      const selectedManga = [];
+      const length = mangaData?.data?.length;
+
+      for (let i = 0; i < count; i++) {
+        const randomIndex = Math.floor(Math.random() * length);
+        selectedManga.push(mangaData?.data[randomIndex]);
+      }
+
+      return selectedManga;
+    };
+
+    let selectedManga = getRandomManga(manga, 6);
+
+    const returnedManga = selectedManga.map((manga) => ({
+      id: manga.id,
+      tags: manga.attributes.tags,
+      cover: `https://uploads.mangadex.org/covers/${manga.id}/${manga?.relationships?.find((t) => t.type === "cover_art")?.attributes?.fileName}.256.jpg`,
+      title: manga.attributes.title,
+      contentRating: manga.attributes.contentRating,
+      publicationDemographic: manga.attributes.publicationDemographic,
+      status: manga.attributes.status,
+      description: manga.attributes.description,
+      type: manga.type,
+    }));
+
+    req = null;
+    mangaIds = null;
+    manga = null;
+    selectedManga = null;
+
+    return returnedManga;
+  } catch (error) {
+    console.error("Error fetching carousel:", error);
+    throw error;
+  }
 };
 
-export const getLatestMangas = async () => {
-  const reqLatestMangas = await makeRequest(
-    "/manga",
-    {
-      limit: 40,
-    },
-    {},
-    { next: { revalidate: 60 } }
-  );
 
-  const latestMangas: any = await fetchCoverImages(reqLatestMangas?.data, {
-    cache: "force-cache",
-  });
+export const fetchTopListings = async () => {
+  try {
+    const [reqTopFollowed, reqTopRated] = await Promise.all([
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { followedCount: "desc" } },
+        { next: { revalidate: 3600 } }
+      ),
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { rating: "desc" } },
+        { next: { revalidate: 3600 } }
+      )
+    ]);
 
-  const returnObject: Manga[] = latestMangas.map((manga: any) => ({
-    id: manga.id,
-    updatedAt: manga.attributes.updatedAt,
-    title: manga.attributes.title,
-    cover: manga.cover,
-  }));
+    const fetchCoversAndStats = async (data: any) => {
+      let ids = data?.data?.map((m: any) => m.id);
+      let mangaData = await fetchCovers(ids);
+      const processedManga = mangaData?.data?.map((manga: any) => ({
+        id: manga.id,
+        tags: manga.attributes.tags,
+        cover: `https://uploads.mangadex.org/covers/${manga.id}/${manga.relationships.find((t: any) => t.type === "cover_art")?.attributes.fileName}.256.jpg`,
+        title: manga.attributes.title
+      }));
+      const stats = await fetchStats(processedManga);
 
-  return returnObject;
+      // Explicit garbage collection
+      ids = null;
+      mangaData = null;
+
+      return { manga: processedManga, stats: stats.map((stat: any) => stat.follows) };
+    };
+
+    const [topFollowed, topRated] = await Promise.all([
+      fetchCoversAndStats(reqTopFollowed),
+      fetchCoversAndStats(reqTopRated)
+    ]);
+
+    return { popular: topFollowed, topRated };
+  } catch (error) {
+    console.error("Error fetching top listings:", error);
+    throw error;
+  }
 };
+
