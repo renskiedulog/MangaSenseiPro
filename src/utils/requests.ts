@@ -211,7 +211,7 @@ export const Carousel = async () => {
     let req = await fetchJson<MDCol<MDChapter>>("manga", {
       limit: 100,
       order: { followedCount: "desc", rating: "desc" },
-    });
+    }, { cache: "no-store"});
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
 
