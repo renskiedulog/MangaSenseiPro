@@ -271,7 +271,7 @@ export const fetchTopListings = async () => {
       ),
     ]);
 
-    const fetchCoversAndStats = async (data: any) => {
+    const fetchCoversAndStats = async (data: any, type: string) => {
       let ids = data?.data?.map((m: any) => m.id);
       let mangaData = await fetchCovers(ids);
       const processedManga: any = mangaData?.data?.map((manga: any) => ({
@@ -291,13 +291,19 @@ export const fetchTopListings = async () => {
 
       return {
         manga: processedManga,
-        stats: stats.map((stat: any) => stat.follows),
+        stats: stats.map((stat: any) => {
+          if(type === "follows") {
+            return stat?.follows
+          } else if(type === "ratings") {
+            return stat?.rating?.average
+          }
+        }),
       };
     };
 
     const [topFollowed, topRated] = await Promise.all([
-      fetchCoversAndStats(reqTopFollowed),
-      fetchCoversAndStats(reqTopRated),
+      fetchCoversAndStats(reqTopFollowed, "follows"),
+      fetchCoversAndStats(reqTopRated, "ratings"),
     ]);
 
     return { popular: topFollowed, topRated };

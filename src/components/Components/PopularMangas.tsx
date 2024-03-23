@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { StarIcon } from "lucide-react";
 
 const PopularMangas = ({ mangas }: { mangas: any }) => {
+  console.log(mangas)
   const [toggle, setToggle]: any = useState(true);
   const [displayed, setDisplayed]: any = useState([]);
 
@@ -74,7 +75,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
               <Link
                 href={`/manga/${manga?.id}`}
                 key={manga.title["en"]}
-                className="line-clamp-2 text-lg hover:text-blue-500 font-bold"
+                className="line-clamp-2 leading-tight text-lg hover:text-blue-500 font-bold"
               >
                 {manga.title["en"] ||
                   manga.title["ja-ro"]}
@@ -98,18 +99,18 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                   })}
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 <p className="text-xs opacity-75 md:text-sm">
                   {toggle ? "Follows:" : "Rating:"}
                 </p>
-                {!toggle && (
-                  <StarIcon className="size-5 fill-yellow-500 stroke-none" />
-                )}
-                <p className="text-xs md:text-sm">
+                <p className="text-xs ml-0.5 md:text-sm">
                   {toggle
                     ? displayed?.stats[index]
                     : displayed?.stats[index].toFixed(2)}
                 </p>
+                    {!toggle && (
+                      <StarIcon className="size-5 fill-yellow-500 stroke-none -translate-y-0.5" />
+                    )}
               </div>
             </div>
           </Card>

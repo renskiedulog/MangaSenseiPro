@@ -142,7 +142,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                       <Link
                         href="#"
                         key={index}
-                        className="mr-1 w-auto hover:text-blue-500 opacity-70 hover:opacity-100 font-medium "
+                        className="mr-1 w-auto hover:text-blue-500 opacity-70 hover:opacity-100 font-medium"
                       >
                         {tag?.attributes?.name["en"]}
                       </Link>
