@@ -133,7 +133,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                 {manga?.title["en"] || manga?.title["ja-ro"] }
               </h1>
               {/* Genres */}
-              <div className="md:text-sm md:h-auto max-h-8 overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">
+              <div className="md:text-sm md:h-auto max-h-8 text-white overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">
                 {manga?.tags?.map((tag: any, index: number) => {
                   const isLastTag =
                     index === manga?.tags?.length - 1;
@@ -142,10 +142,9 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                       <Link
                         href="#"
                         key={index}
-                        className="mr-1 w-auto hover:text-blue-500 opacity-80 hover:opacity-100"
+                        className="mr-1 w-auto hover:text-blue-500 opacity-70 hover:opacity-100 font-medium "
                       >
                         {tag?.attributes?.name["en"]}
-                        {!isLastTag && index !== 4 && ","}
                       </Link>
                     );
                   }
