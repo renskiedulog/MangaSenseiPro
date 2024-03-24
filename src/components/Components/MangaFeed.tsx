@@ -1,15 +1,14 @@
 import React from "react";
 import Mangas from "./Mangas";
-import { Carousel, fetchTopListings, getLatestManga } from "@/utils/requests";
+import { getLatestManga } from "@/utils/requests";
 
 const MangaFeed = async () => {
   "use server";
-  // const latestMangas = await getLatestManga();
-  const top = await fetchTopListings();
+  const latest = await getLatestManga();
 
   return (
-    <div>
-      <Mangas mangas={top} />
+    <div className="flex flex-wrap gap-2 bg-[#fff1] mt-2 rounded w-full h-[200vh]">
+      <Mangas mangas={latest} />
     </div>
   );
 };

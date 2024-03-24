@@ -30,7 +30,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="pt-[3.5rem] px-2">
+          <div className="pt-[3.5rem] px-2 scrolling-container">
             <NavigationBar />
             {children}
           </div>

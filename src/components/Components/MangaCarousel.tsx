@@ -43,7 +43,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             });
           }
         }
-      }, 600000);
+      }, 15000);
     };
 
     const handleScroll = () => {
@@ -94,7 +94,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
             priority
           />
-          <div className="z-20 w-7/12 md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 max-w-2xl md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">

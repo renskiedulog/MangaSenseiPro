@@ -203,15 +203,34 @@ export const getLatestManga = async () => {
     }
   }
 
+  const chapterOutput = output
+    .map((e) => e.chapter)
+    .map((k) => ({
+      id: k?.id,
+      chapterTitle: k?.attributes?.title,
+      chapter: k?.attributes?.chapter,
+    }));
+
+  const mangaOutput = output
+    .map((e) => e.manga)
+    .map((k) => ({
+      id: k?.id,
+      title: k?.attributes?.title,
+    }));
+
   return output;
 };
 
 export const Carousel = async () => {
   try {
-    let req = await fetchJson<MDCol<MDChapter>>("manga", {
-      limit: 100,
-      order: { followedCount: "desc", rating: "desc" },
-    }, { cache: "no-store"});
+    let req = await fetchJson<MDCol<MDChapter>>(
+      "manga",
+      {
+        limit: 100,
+        order: { followedCount: "desc", rating: "desc" },
+      },
+      { cache: "no-store" }
+    );
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
 
@@ -233,8 +252,8 @@ export const Carousel = async () => {
       id: manga.id,
       tags: manga.attributes.tags,
       cover: `https://uploads.mangadex.org/covers/${manga.id}/${
-        manga?.relationships?.find((t: any) => t.type === "cover_art")?.attributes
-          ?.fileName
+        manga?.relationships?.find((t: any) => t.type === "cover_art")
+          ?.attributes?.fileName
       }.256.jpg`,
       title: manga.attributes.title,
       contentRating: manga.attributes.contentRating,
@@ -258,7 +277,7 @@ export const Carousel = async () => {
 
 export const fetchTopListings = async () => {
   try {
-    const [reqTopFollowed, reqTopRated] = await Promise.all([
+    let [reqTopFollowed, reqTopRated] = await Promise.all([
       fetchJson<MDCol<MDChapter>>(
         "manga",
         { limit: 10, order: { followedCount: "desc" } },
@@ -271,42 +290,23 @@ export const fetchTopListings = async () => {
       ),
     ]);
 
-    const fetchCoversAndStats = async (data: any, type: string) => {
-      let ids = data?.data?.map((m: any) => m.id);
-      let mangaData = await fetchCovers(ids);
-      const processedManga: any = mangaData?.data?.map((manga: any) => ({
+    const returnedTopFollowed: any = reqTopFollowed?.data?.map(
+      (manga: any) => ({
         id: manga.id,
-        tags: manga.attributes.tags,
-        cover: `https://uploads.mangadex.org/covers/${manga.id}/${
-          manga.relationships.find((t: any) => t.type === "cover_art")
-            ?.attributes.fileName
-        }.256.jpg`,
         title: manga.attributes.title,
-      }));
-      const stats = await fetchStats(processedManga);
+      })
+    );
 
-      // Explicit garbage collection
-      ids = null;
-      mangaData = null;
+    const returnedTopRated: any = reqTopRated?.data?.map((manga: any) => ({
+      id: manga.id,
+      title: manga.attributes.title,
+    }));
 
-      return {
-        manga: processedManga,
-        stats: stats.map((stat: any) => {
-          if(type === "follows") {
-            return stat?.follows
-          } else if(type === "ratings") {
-            return stat?.rating?.average
-          }
-        }),
-      };
-    };
+    // Explicit garbage collection
+    reqTopFollowed = null;
+    reqTopRated = null;
 
-    const [topFollowed, topRated] = await Promise.all([
-      fetchCoversAndStats(reqTopFollowed, "follows"),
-      fetchCoversAndStats(reqTopRated, "ratings"),
-    ]);
-
-    return { popular: topFollowed, topRated };
+    return { popular: returnedTopFollowed, topRated: returnedTopRated };
   } catch (error) {
     console.error("Error fetching top listings:", error);
     throw error;

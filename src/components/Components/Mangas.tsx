@@ -1,8 +1,9 @@
-"use client"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Mangas = ({ mangas }: { mangas: any }) => {
-  console.log(mangas)
   return <></>;
 };
 
