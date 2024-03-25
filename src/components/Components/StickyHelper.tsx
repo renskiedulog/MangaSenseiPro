@@ -9,7 +9,7 @@ const StickyHelper = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollThreshold = 540; // Adjust this value to your desired scroll threshold
+      const scrollThreshold = 520; // Adjust this value to your desired scroll threshold
       const currentScrollY = window.scrollY || window.pageYOffset;
 
       // Check if the scroll position is greater than or equal to the threshold
@@ -37,16 +37,22 @@ const StickyHelper = () => {
       <div className="w-full grid grid-cols-2">
         <div className="text-center text-sm">
           <p>Specify Search</p>
-          <Button className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white" size={"sm"}>
+          <Button
+            className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+            size={"sm"}
+          >
             <FilterIcon className="size-4 mr-1" />
             Filter
           </Button>
         </div>
         <div className="text-center text-sm">
           <p>Randomize</p>
-          <Button className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white" size={"sm"}>
-            <ShuffleIcon className="size-4 mr-1"/>
-            Filter
+          <Button
+            className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+            size={"sm"}
+          >
+            <ShuffleIcon className="size-4 mr-1" />
+            Random
           </Button>
         </div>
       </div>

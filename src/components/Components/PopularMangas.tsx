@@ -5,7 +5,6 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 
 const PopularMangas = ({ mangas }: { mangas: any }) => {
-  console.log(mangas);
   const [toggle, setToggle]: any = useState(true);
   const [displayed, setDisplayed]: any = useState([]);
 

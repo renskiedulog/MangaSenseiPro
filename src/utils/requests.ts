@@ -164,61 +164,29 @@ export const fetchStats = async (array: any[]) => {
 };
 
 const fetchLatestChapters = (offset = 0, limit = 100) => {
-  return fetchJson<MDCol<MDChapter>>("chapter", {
+  return fetchJson<MDCol<MDChapter>>("manga", {
     offset,
     limit,
-    translatedLanguage: ["en"],
     order: { updatedAt: "desc" },
-    includeExternalUrl: 0,
   });
 };
 
 export const getLatestManga = async () => {
-  const chapters: any = await fetchLatestChapters();
-  const mangaIds = <string[]>(
-    chapters.data
-      .map(
-        (c: any) => c.relationships?.find((t: any) => t.type === "manga")?.id
-      )
-      .filter((t: any) => !!t)
-  );
-  const manga: any = await fetchCovers(mangaIds);
+  const latest = await fetchLatestChapters(0, 60);
+  const latestIds: any = latest?.data.map((k: any) => k.id);
+  const covers = await fetchCovers(latestIds);
 
-  let output: OutputModel[] = [];
+  const returnedManga = covers?.data?.map((k: any) => ({
+    id: k?.id,
+    updatedAt: k?.attributes?.updatedAt,
+    cover: `https://uploads.mangadex.org/covers/${k?.id}/${
+      k?.relationships?.find((t: any) => t?.type === "cover_art")?.attributes
+        ?.fileName
+    }.256.jpg`,
+    title: k?.attributes?.title,
+  }));
 
-  for (const chapter of chapters.data) {
-    for (const rel of chapter.relationships ?? []) {
-      if (rel.type !== "manga") continue;
-
-      const existing = manga.data.find((m: any) => m.id === rel.id);
-      if (!existing) {
-        console.log("Manga not found:", rel.id);
-        continue;
-      }
-
-      output.push({
-        manga: existing,
-        chapter: chapter,
-      });
-    }
-  }
-
-  const chapterOutput = output
-    .map((e) => e.chapter)
-    .map((k) => ({
-      id: k?.id,
-      chapterTitle: k?.attributes?.title,
-      chapter: k?.attributes?.chapter,
-    }));
-
-  const mangaOutput = output
-    .map((e) => e.manga)
-    .map((k) => ({
-      id: k?.id,
-      title: k?.attributes?.title,
-    }));
-
-  return output;
+  return returnedManga;
 };
 
 export const Carousel = async () => {
@@ -234,33 +202,34 @@ export const Carousel = async () => {
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
 
-    const getRandomManga = (mangaData: MDCol, count: number) => {
+    const getRandomManga = async (mangaData: MDCol, count: number) => {
       const selectedManga = [];
       const length: any = mangaData?.data?.length;
 
       for (let i = 0; i < count; i++) {
         const randomIndex = Math.floor(Math.random() * length);
         selectedManga.push(mangaData?.data[randomIndex]);
+        mangaData?.data?.splice(randomIndex, 1);
       }
 
       return selectedManga;
     };
 
-    let selectedManga: any = getRandomManga(manga, 6);
+    let selectedManga: any = await getRandomManga(manga, 6);
 
-    const returnedManga = selectedManga.map((manga: any) => ({
-      id: manga.id,
-      tags: manga.attributes.tags,
-      cover: `https://uploads.mangadex.org/covers/${manga.id}/${
-        manga?.relationships?.find((t: any) => t.type === "cover_art")
+    const returnedManga = selectedManga?.map((manga: any) => ({
+      id: manga?.id,
+      tags: manga?.attributes?.tags,
+      cover: `https://uploads.mangadex.org/covers/${manga?.id}/${
+        manga?.relationships?.find((t: any) => t?.type === "cover_art")
           ?.attributes?.fileName
       }.256.jpg`,
-      title: manga.attributes.title,
-      contentRating: manga.attributes.contentRating,
-      publicationDemographic: manga.attributes.publicationDemographic,
-      status: manga.attributes.status,
-      description: manga.attributes.description,
-      type: manga.type,
+      title: manga?.attributes?.title,
+      contentRating: manga?.attributes?.contentRating,
+      publicationDemographic: manga?.attributes?.publicationDemographic,
+      status: manga?.attributes?.status,
+      description: manga?.attributes?.description,
+      type: manga?.type,
     }));
 
     req = null;
@@ -312,3 +281,37 @@ export const fetchTopListings = async () => {
     throw error;
   }
 };
+
+export function timeAgo(dateString: string) {
+  const providedDate: any = new Date(dateString);
+  const now: any = new Date();
+
+  const timeDifferenceInSeconds = Math.floor((now - providedDate) / 1000);
+
+  if (providedDate > now) {
+    return null;
+  }
+
+  if (timeDifferenceInSeconds < 60) {
+    return `${timeDifferenceInSeconds} second${
+      timeDifferenceInSeconds !== 1 ? "s" : ""
+    } ago`;
+  } else if (timeDifferenceInSeconds < 3600) {
+    const minutesAgo = Math.floor(timeDifferenceInSeconds / 60);
+    return `${minutesAgo} minute${minutesAgo !== 1 ? "s" : ""} ago`;
+  } else if (timeDifferenceInSeconds < 86400) {
+    const hoursAgo = Math.floor(timeDifferenceInSeconds / 3600);
+    return `${hoursAgo} hour${hoursAgo !== 1 ? "s" : ""} ago`;
+  } else if (timeDifferenceInSeconds < 2592000) {
+    // Less than 30 days (approx. a month)
+    const daysAgo = Math.floor(timeDifferenceInSeconds / 86400);
+    return `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`;
+  } else if (timeDifferenceInSeconds < 31536000) {
+    // Less than 365 days (approx. a year)
+    const monthsAgo = Math.floor(timeDifferenceInSeconds / 2592000);
+    return `${monthsAgo} month${monthsAgo !== 1 ? "s" : ""} ago`;
+  } else {
+    const yearsAgo = Math.floor(timeDifferenceInSeconds / 31536000);
+    return `${yearsAgo} year${yearsAgo !== 1 ? "s" : ""} ago`;
+  }
+}

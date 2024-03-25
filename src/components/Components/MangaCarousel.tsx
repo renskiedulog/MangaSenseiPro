@@ -7,7 +7,6 @@ import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
-  
   const carouselRef: any = useRef(null);
 
   const contentTypeBg: any = {
@@ -94,7 +93,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
             priority
           />
-          <div className="z-20 w-7/12 max-w-2xl md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 md:max-w-2xl lg:max-w-[60rem] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
@@ -130,13 +129,12 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                 className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
                 title={manga?.title["en"] || manga?.title["ja-ro"]}
               >
-                {manga?.title["en"] || manga?.title["ja-ro"] }
+                {manga?.title["en"] || manga?.title["ja-ro"]}
               </h1>
               {/* Genres */}
               <div className="md:text-sm md:h-auto max-h-8 text-white overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">
                 {manga?.tags?.map((tag: any, index: number) => {
-                  const isLastTag =
-                    index === manga?.tags?.length - 1;
+                  const isLastTag = index === manga?.tags?.length - 1;
                   if (index <= 4) {
                     return (
                       <Link
