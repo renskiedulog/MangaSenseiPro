@@ -12,9 +12,9 @@ const Mangas = ({ mangas }: { mangas: any }) => {
         height={500}
         width={400}
         alt={`manga-cover-${manga?.title}`}
-        className="aspect-[1/1.3] w-full rounded group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
+        className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
       />
-      <h1 className="h-6 md:text-base py-1 font-semibold text-sm overflow-hidden group-hover:text-blue-400">
+      <h1 className="h-6 md:text-base py-1 font-normal md:font-semibold text-sm overflow-hidden group-hover:text-blue-400">
         {manga?.title["en"] || manga?.title["ja-ro"]}
       </h1>
       <p className="text-xs md:text-sm text-primary brightness-50">
