@@ -44,7 +44,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
         return (
           <Link
             href={`/manga/${manga?.id}`}
-            key={manga.title["en"]}
+            key={index}
             className="line-clamp-2 leading-tight group font-semibold"
           >
             <Card

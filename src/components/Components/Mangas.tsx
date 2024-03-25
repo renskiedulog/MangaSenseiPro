@@ -5,11 +5,9 @@ import Link from "next/link";
 import React from "react";
 
 const Mangas = ({ mangas }: { mangas: any }) => {
-  console.log(mangas);
   return mangas?.map((manga: any, idx: number) => (
-    <Link href={`/${manga?.id}`} className="w-full text-center group">
+    <Link key={idx} href={`/${manga?.id}`} className="w-full text-center group">
       <Image
-        key={idx}
         src={manga?.cover}
         height={500}
         width={400}

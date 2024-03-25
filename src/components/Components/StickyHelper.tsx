@@ -38,6 +38,7 @@ const StickyHelper = () => {
         <div className="text-center text-sm">
           <p>Specify Search</p>
           <Button
+            key="filter-btn"
             className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
             size={"sm"}
           >
@@ -48,6 +49,7 @@ const StickyHelper = () => {
         <div className="text-center text-sm">
           <p>Randomize</p>
           <Button
+            key="randomize-btn"
             className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
             size={"sm"}
           >
