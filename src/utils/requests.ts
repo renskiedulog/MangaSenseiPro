@@ -1,3 +1,4 @@
+
 type Primitives = string | number | boolean | Date;
 type KeyValue<T = string> = { [key: string]: T };
 type QueryParam = {
@@ -128,11 +129,12 @@ const fetchJson = async <T = any>(
   return <T>await response?.json();
 };
 
-const fetchCovers = (ids: string[], offset = 0, limit = 100) => {
+const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
   return fetchJson<MDCol<MDManga>>(
     "manga",
     {
       ids: ids,
+      order,
       includes: [
         "cover_art",
         "author",
@@ -174,7 +176,7 @@ const fetchLatestChapters = (offset = 0, limit = 100) => {
 export const getLatestManga = async () => {
   const latest = await fetchLatestChapters(0, 60);
   const latestIds: any = latest?.data.map((k: any) => k.id);
-  const covers = await fetchCovers(latestIds);
+  const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
 
   const returnedManga = covers?.data?.map((k: any) => ({
     id: k?.id,
@@ -203,13 +205,17 @@ export const Carousel = async () => {
     let manga = await fetchCovers(mangaIds);
 
     const getRandomManga = async (mangaData: MDCol, count: number) => {
-      const selectedManga = [];
+      const selectedManga: any = [];
       const length: any = mangaData?.data?.length;
 
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * length);
-        selectedManga.push(mangaData?.data[randomIndex]);
-        mangaData?.data?.splice(randomIndex, 1);
+        if (!selectedManga.includes(mangaData?.data[randomIndex])) {
+          selectedManga.push(mangaData?.data[randomIndex]);
+        }
+        if (selectedManga?.length === count) {
+          break;
+        }
       }
 
       return selectedManga;
@@ -315,3 +321,29 @@ export function timeAgo(dateString: string) {
     return `${yearsAgo} year${yearsAgo !== 1 ? "s" : ""} ago`;
   }
 }
+
+export const getFeaturedManga = async () => {
+    let randomOffset: any = Math.floor(Math.random() * 100);
+    let req: any = await fetchJson<MDCol<MDChapter>>(
+      "manga",
+      {
+        offset: randomOffset,
+        limit: 20,
+        order: { followedCount: "desc", rating: "desc" },
+      },
+      { cache: "no-store" }
+    );
+    let randomManga: any = Math.floor(Math.random() * 20);
+    let manga = await fetchCovers([req?.data[randomManga].id]);
+    const featuredWithDate = {
+      manga: manga?.data[0],
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    manga = null;
+    req = null;
+    randomManga = null;
+    randomOffset = null;
+    
+    return featuredWithDate;
+};

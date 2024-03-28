@@ -6,7 +6,7 @@ import React from "react";
 
 const Mangas = ({ mangas }: { mangas: any }) => {
   return mangas?.map((manga: any, idx: number) => (
-    <Link key={idx} href={`/${manga?.id}`} className="w-full text-center group">
+    <Link key={idx} href={`/${manga?.id}`} className="w-full text-center group" title={manga?.title["en"] || manga?.title["ja-ro"]}>
       <Image
         src={manga?.cover}
         height={500}
@@ -14,10 +14,10 @@ const Mangas = ({ mangas }: { mangas: any }) => {
         alt={`manga-cover-${manga?.title}`}
         className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
       />
-      <h1 className="h-6 md:text-base py-1 font-normal md:font-semibold text-sm overflow-hidden group-hover:text-blue-400">
+      <h1 className="h-7 md:text-[15px] opacity-80 group-hover:opacity-100 py-1 font-normal md:font-semibold text-sm overflow-hidden group-hover:text-blue-400">
         {manga?.title["en"] || manga?.title["ja-ro"]}
       </h1>
-      <p className="text-xs md:text-sm text-primary brightness-50">
+      <p className="text-xs md:text-sm text-primary brightness-50 group-hover:brightness-75">
         {timeAgo(manga?.updatedAt)}
       </p>
     </Link>

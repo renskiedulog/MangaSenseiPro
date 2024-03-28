@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { FilterIcon, ShuffleIcon } from "lucide-react";
+import FeaturedManga from "./FeaturedManga";
 
-const StickyHelper = () => {
+const StickyHelper = ({ featured }: { featured: any }) => {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
@@ -28,37 +29,43 @@ const StickyHelper = () => {
   }, []); // Effect depends on the scrollingContainerRef
 
   return (
-    <Card
+    <div
       className={`${
         isSticky ? "static md:fixed md:top-14 md:mr-6 md:!w-[24%]" : ""
-      } mt-2 transition border-accent bg-[var(--card-background)] p-2 w-full`}
+      } mt-2 transition w-full`}
     >
-      <h1 className="text-lg font-bold text-center py-2">Tired Of Browsing?</h1>
-      <div className="w-full grid grid-cols-2">
-        <div className="text-center text-sm">
-          <p>Specify Search</p>
-          <Button
-            key="filter-btn"
-            className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
-            size={"sm"}
-          >
-            <FilterIcon className="size-4 mr-1" />
-            Filter
-          </Button>
+      <FeaturedManga newFeatured={featured} />
+      {/* Filter And Random Helper */}
+      <Card className="bg-[var(--card-background)] p-2 border-accent">
+        <h1 className="text-lg font-bold text-center py-2">
+          Tired Of Browsing?
+        </h1>
+        <div className="w-full grid grid-cols-2">
+          <div className="text-center text-sm">
+            <p>Specify Search</p>
+            <Button
+              key="filter-btn"
+              className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+              size={"sm"}
+            >
+              <FilterIcon className="size-4 mr-1" />
+              Filter
+            </Button>
+          </div>
+          <div className="text-center text-sm">
+            <p>Randomize</p>
+            <Button
+              key="randomize-btn"
+              className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+              size={"sm"}
+            >
+              <ShuffleIcon className="size-4 mr-1" />
+              Random
+            </Button>
+          </div>
         </div>
-        <div className="text-center text-sm">
-          <p>Randomize</p>
-          <Button
-            key="randomize-btn"
-            className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
-            size={"sm"}
-          >
-            <ShuffleIcon className="size-4 mr-1" />
-            Random
-          </Button>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 };
 

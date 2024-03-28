@@ -70,7 +70,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
       className="scrollbar-hidden flex overflow-x-auto snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
       ref={carouselRef}
     >
-      {carouselItems?.map((manga: any, index: number) => (
+      {carouselItems.length !== 0 && carouselItems?.map((manga: any, index: number) => (
         <Card
           key={index}
           className="relative min-w-[100%] snap-start overflow-hidden flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
@@ -93,7 +93,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
             priority
           />
-          <div className="z-20 w-7/12 md:max-w-2xl lg:max-w-[60rem] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
+          <div className="z-20 w-7/12 md:max-w-[30rem] xl:max-w-[60rem] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
               {/* Badges */}
               <h2 className="flex gap-1 uppercase font-semibold text-white">
@@ -127,9 +127,9 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               {/* Title */}
               <h1
                 className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
-                title={manga?.title["en"] || manga?.title["ja-ro"]}
+                title={manga?.title?.en || manga?.title["ja-ro"]}
               >
-                {manga?.title["en"] || manga?.title["ja-ro"]}
+                {manga?.title?.en || manga?.title["ja-ro"]}
               </h1>
               {/* Genres */}
               <div className="md:text-sm md:h-auto max-h-8 text-white overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">
