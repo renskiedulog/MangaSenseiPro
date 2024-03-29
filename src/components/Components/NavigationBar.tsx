@@ -20,13 +20,20 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import SearchBar from "./SearchBar";
+import Image from "next/image";
+import { Permanent_Marker } from "next/font/google";
+
+const font = Permanent_Marker({
+  weight: ["400"],
+  subsets: ["latin"],
+});
 
 const NavigationBar = () => {
   return (
     <NavigationMenu className="fixed top-0 z-50 max-w-none w-full justify-between border-b border-border bg-background left-0 h-[3.5rem] md:px-10 px-5">
       <NavigationMenuList>
-        <Link href="#" className="font-bold text-lg">
-          MangaSensei
+        <Link href="#" className="font-bold text-lg flex items-center gap-2">
+          <p className={`text-xl md:text-3xl text-primary font-bold tracking-tight transition hover:scale-105 ${font.className}`}>Manga<span className="font-normal">Sensei</span></p>
         </Link>
         <NavigationMenuItem className="md:pl-3 md:block hidden">
           <NavigationMenuTrigger className="opacity-70 hover:opacity-100 font-medium">

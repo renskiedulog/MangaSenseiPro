@@ -1,38 +1,13 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { FilterIcon, ShuffleIcon } from "lucide-react";
 import FeaturedManga from "./FeaturedManga";
 
 const StickyHelper = ({ featured }: { featured: any }) => {
-  const [isSticky, setIsSticky] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollThreshold = 520; // Adjust this value to your desired scroll threshold
-      const currentScrollY = window.scrollY || window.pageYOffset;
-
-      // Check if the scroll position is greater than or equal to the threshold
-      if (currentScrollY >= scrollThreshold) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []); // Effect depends on the scrollingContainerRef
 
   return (
     <div
-      className={`${
-        isSticky ? "static md:fixed md:top-14 md:mr-6 md:!w-[24%]" : ""
-      } mt-2 transition w-full`}
+      className="static md:sticky top-0 md:top-16 md:mr-6 transition w-full"
     >
       <FeaturedManga newFeatured={featured} />
       {/* Filter And Random Helper */}

@@ -3,41 +3,42 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
+import TopMangasLoader from "../Skeletons/TopMangasLoader";
+
+const buttons = [
+  { name: "Popular", tag: "popular" },
+  { name: "Top", tag: "topRated" },
+  { name: "Hot", tag: "hot" },
+  { name: "Top Read", tag: "topRead" },
+];
 
 const PopularMangas = ({ mangas }: { mangas: any }) => {
-  const [toggle, setToggle]: any = useState(true);
-  const [displayed, setDisplayed]: any = useState([]);
+  const [toggle, setToggle]: any = useState("popular");
+  const [displayed, setDisplayed]: any = useState(null);
 
   useEffect(() => {
     setDisplayed([]);
-    if (toggle) {
-      setDisplayed(mangas?.popular);
-    } else {
-      setDisplayed(mangas?.topRated);
-    }
+    setDisplayed(mangas[toggle]);
   }, [toggle]);
 
   const handleToggle = (toggle: any) => {
     setToggle(toggle);
   };
 
-  return (
+  return displayed ? (
     <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
       <header key="header" className="flex items-center border-b border-accent">
-        <Button
-          variant={`${toggle ? "secondary" : "ghost"}`}
-          className={`px-3 rounded-none py-2 ${toggle ? "text-blue-500" : ""}`}
-          onClick={() => handleToggle(true)}
-        >
-          Popular
-        </Button>
-        <Button
-          variant={`${!toggle ? "secondary" : "ghost"}`}
-          className={`px-3 rounded-none py-2 ${!toggle ? "text-blue-500" : ""}`}
-          onClick={() => handleToggle(false)}
-        >
-          Top Rated
-        </Button>
+        {buttons?.map((btn, idx) => (
+          <Button key={idx}
+            variant={`${toggle === btn.tag ? "secondary" : "ghost"}`}
+            className={`px-3 rounded-none flex-grow py-2 ${
+              toggle === btn.tag ? "text-blue-500" : ""
+            }`}
+            onClick={() => handleToggle(btn.tag)}
+          >
+            {btn.name}
+          </Button>
+        ))}
       </header>
       {/* Mangas */}
       {displayed?.map((manga: any, index: number) => {
@@ -54,12 +55,16 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
               <p className="border text-sm border-accent text-slate-400 w-7 rounded text-primary flex items-center justify-center aspect-square">
                 {index + 1}
               </p>
-              {manga.title["en"] || manga.title["ja-ro"]}
+              <p className="text-ellipsis line-clamp-2 w-full">
+                {manga.title["en"] || manga.title["ja-ro"]}
+              </p>
             </Card>
           </Link>
         );
       })}
     </Card>
+  ) : (
+    <TopMangasLoader />
   );
 };
 

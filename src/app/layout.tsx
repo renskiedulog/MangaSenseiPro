@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import NavigationBar from "@/components/Components/NavigationBar";
 import { ThemeProvider } from "@/components/Components/ThemesProvider";
+import Footer from './../components/Components/Footer';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -12,6 +13,7 @@ const fontSans = FontSans({
 
 export default function RootLayout({
   children,
+  
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -30,9 +32,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="pt-[3.5rem] px-2 scrolling-container">
+          <div className="pt-[3.5rem] scrolling-container">
             <NavigationBar />
             {children}
+            <Footer />  
           </div>
         </ThemeProvider>
       </body>

@@ -252,7 +252,7 @@ export const Carousel = async () => {
 
 export const fetchTopListings = async () => {
   try {
-    let [reqTopFollowed, reqTopRated] = await Promise.all([
+    let [reqTopFollowed, reqTopRated, reqHot, reqTopRead] = await Promise.all([
       fetchJson<MDCol<MDChapter>>(
         "manga",
         { limit: 10, order: { followedCount: "desc" } },
@@ -262,6 +262,16 @@ export const fetchTopListings = async () => {
         "manga",
         { limit: 10, order: { rating: "desc" } },
         { next: { revalidate: 3600 } }
+      ),
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { updatedAt: "desc", followedCount: "desc"} },
+        { next: { revalidate: 60 } }
+      ),
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { updatedAt: "desc", rating: "desc", followedCount: "desc" } },
+        { next: { revalidate: 60 } }
       ),
     ]);
 
@@ -277,11 +287,23 @@ export const fetchTopListings = async () => {
       title: manga.attributes.title,
     }));
 
+    const returnedHot: any = reqHot?.data?.map((manga: any) => ({
+      id: manga.id,
+      title: manga.attributes.title,
+    }));
+
+    const returnedTopRead: any = reqTopRead?.data?.map((manga: any) => ({
+      id: manga.id,
+      title: manga.attributes.title,
+    }));
+
     // Explicit garbage collection
     reqTopFollowed = null;
     reqTopRated = null;
+    reqHot = null,
+    reqTopRead = null;
 
-    return { popular: returnedTopFollowed, topRated: returnedTopRated };
+    return { popular: returnedTopFollowed, topRated: returnedTopRated, hot: returnedHot, topRead: returnedTopRead };
   } catch (error) {
     console.error("Error fetching top listings:", error);
     throw error;
@@ -335,11 +357,27 @@ export const getFeaturedManga = async () => {
     );
     let randomManga: any = Math.floor(Math.random() * 20);
     let manga = await fetchCovers([req?.data[randomManga].id]);
+    let returnedManga: any = manga?.data?.map((manga: any) => ({
+      id: manga?.id,
+      tags: manga?.attributes?.tags,
+      cover: `https://uploads.mangadex.org/covers/${manga?.id}/${
+        manga?.relationships?.find((t: any) => t?.type === "cover_art")
+          ?.attributes?.fileName
+      }.256.jpg`,
+      title: manga?.attributes?.title,
+      contentRating: manga?.attributes?.contentRating,
+      publicationDemographic: manga?.attributes?.publicationDemographic,
+      status: manga?.attributes?.status,
+      description: manga?.attributes?.description,
+      type: manga?.type,
+    }));
+
     const featuredWithDate = {
-      manga: manga?.data[0],
+      manga: returnedManga[0],
       date: new Date().toISOString().split("T")[0],
     };
 
+    returnedManga = null;
     manga = null;
     req = null;
     randomManga = null;
