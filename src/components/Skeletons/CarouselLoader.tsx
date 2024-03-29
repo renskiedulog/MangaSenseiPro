@@ -7,7 +7,7 @@ const CarouselLoader = () => {
       <div className="w-4/5 h-5/6 flex flex-col gap-1">
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, index) => (
-            <Skeleton className="w-10 h-5 bg-[#0001] dark:bg-[#fff1]" />
+            <Skeleton key={index} className="w-10 h-5 bg-[#0001] dark:bg-[#fff1]" />
           ))}
         </div>
         <Skeleton className="w-full h-10 bg-[#0001] dark:bg-[#fff1]" />
