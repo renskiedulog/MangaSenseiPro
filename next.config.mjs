@@ -3,6 +3,7 @@ export default {
     reactStrictMode: true,
     images: {
         unoptimized: true,
+        disableStaticImages: true,
         remotePatterns: [
             {
                 protocol: 'https',

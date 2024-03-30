@@ -8,6 +8,7 @@ import { BookmarkIcon } from "lucide-react";
 import CarouselLoader from "../Skeletons/CarouselLoader";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
+  console.log(carouselItems?.title)
   const carouselRef: any = useRef(null);
   const [items, setItems] = useState([]);
 
