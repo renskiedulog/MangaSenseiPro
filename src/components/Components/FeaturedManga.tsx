@@ -69,77 +69,75 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
     };
   }, []);
 
-  return (
-    featuredManga ? (
-      <Card className="relative my-2 transition border-accent bg-[var(--card-background)] overflow-hidden rounded-md w-full group">
-        <Image
-          alt="featured-cover"
-          height={500}
-          width={400}
-          src={featuredManga?.cover}
-          priority
-          className="w-full max-h-80 object-cover object-center mx-auto border-accent group-hover:brightness-50 z-0"
-        />
-        {/* Overlay */}
-        <div className="overlay absolute top-0 left-0 z-10 w-full h-full flex flex-col px-2 py-1 justify-end transition overflow-hidden">
-          <div className="flex gap-1 uppercase font-semibold text-white">
-            <p
-              className={`w-min rounded bg-[crimson] px-1 py-[2px] text-[.6rem]`}
-            >
-              FEATURED
-            </p>
+  return featuredManga ? (
+    <Card className="relative my-2 border-accent bg-[var(--card-background)] overflow-hidden rounded-md w-full group">
+      <Image
+        alt="featured-cover"
+        height={500}
+        width={400}
+        src={featuredManga?.cover}
+        priority
+        className="w-full max-h-80 object-cover object-center mx-auto border-accent group-hover:brightness-50 z-0"
+      />
+      {/* Overlay */}
+      <div className="overlay absolute top-0 left-0 z-10 w-full h-full flex flex-col px-2 py-1 justify-end overflow-hidden">
+        <div className="flex gap-1 uppercase font-semibold text-white">
+          <p
+            className={`w-min rounded bg-[crimson] px-1 py-[2px] text-[.6rem]`}
+          >
+            FEATURED
+          </p>
+          <p className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem]`}>
+            {featuredManga?.type}
+          </p>
+          {featuredManga?.publicationDemographic && (
             <p
               className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem]`}
             >
-              {featuredManga?.type}
+              {featuredManga?.publicationDemographic}
             </p>
-            {featuredManga?.publicationDemographic && (
-              <p
-                className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem]`}
-              >
-                {featuredManga?.publicationDemographic}
-              </p>
-            )}
-            <p
-              className={`w-min rounded px-1 py-[2px] text-[.6rem] ${
-                contentTypeBg[featuredManga?.contentRating]
-              }`}
-            >
-              {featuredManga?.contentRating}
-            </p>
-            <p
-              className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem] ${
-                contentTypeBg[featuredManga?.status?.toLowerCase()]
-              }`}
-            >
-              {featuredManga?.status?.toUpperCase()}
-            </p>
-          </div>
-          <p className="text-white text-lg md:text-xl font-semibold pt-1">
-            {featuredManga?.title?.en || featuredManga?.title["ja-ro"]}
+          )}
+          <p
+            className={`w-min rounded px-1 py-[2px] text-[.6rem] ${
+              contentTypeBg[featuredManga?.contentRating]
+            }`}
+          >
+            {featuredManga?.contentRating}
           </p>
-          <div className="description group-hover:max-h-[300px] animate-hover-out">
-            <p className="text-sm line-clamp-[8] text-white text-ellipsis">
-              {featuredManga?.description.en}
-            </p>
-            <div className="flex items-center py-1 gap-2">
-              <Button
-                className="bg-[#fff3] text-white hover:bg-blue-500"
-                size="sm"
-              >
-                <BookmarkIcon />
-              </Button>
-              <Button
-                className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
-                size="sm"
-              >
-                Read
-              </Button>
-            </div>
+          <p
+            className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem] ${
+              contentTypeBg[featuredManga?.status?.toLowerCase()]
+            }`}
+          >
+            {featuredManga?.status?.toUpperCase()}
+          </p>
+        </div>
+        <p className="text-white text-lg md:text-xl font-semibold pt-1">
+          {featuredManga?.title?.en || featuredManga?.title["ja-ro"]}
+        </p>
+        <div className="description group-hover:max-h-[300px]">
+          <p className="text-sm line-clamp-[8] text-white text-ellipsis">
+            {featuredManga?.description.en}
+          </p>
+          <div className="flex items-center py-1 gap-2">
+            <Button
+              className="bg-[#fff3] text-white hover:bg-blue-500"
+              size="sm"
+            >
+              <BookmarkIcon />
+            </Button>
+            <Button
+              className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
+              size="sm"
+            >
+              Read
+            </Button>
           </div>
         </div>
-      </Card>
-    ) : <FeaturedLoader />
+      </div>
+    </Card>
+  ) : (
+    <FeaturedLoader />
   );
 };
 

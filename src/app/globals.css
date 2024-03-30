@@ -68,6 +68,7 @@
 
 .overlay .description {
   max-height: 0;
+  transition: all .9s ease-in-out;
 }
 
 .animate-hover-in {
@@ -75,7 +76,7 @@
 }
 
 .animate-hover-out {
-  animation: hover-out .5s ease-in-out;
+  animation: hover-out .3s ease-in-out;
 }
 
 @keyframes hover-in {
@@ -89,7 +90,7 @@
 
 @keyframes hover-out {
   0% {
-    max-height: 200px;
+    max-height: 180px;
   }
   100% {
     max-height: 0;

@@ -1,4 +1,3 @@
-
 type Primitives = string | number | boolean | Date;
 type KeyValue<T = string> = { [key: string]: T };
 type QueryParam = {
@@ -166,11 +165,15 @@ export const fetchStats = async (array: any[]) => {
 };
 
 const fetchLatestChapters = (offset = 0, limit = 100) => {
-  return fetchJson<MDCol<MDChapter>>("manga", {
-    offset,
-    limit,
-    order: { updatedAt: "desc" },
-  });
+  return fetchJson<MDCol<MDChapter>>(
+    "manga",
+    {
+      offset,
+      limit,
+      order: { updatedAt: "desc" },
+    },
+    { next: { revalidate: 3600 } }
+  );
 };
 
 export const getLatestManga = async () => {
@@ -265,12 +268,15 @@ export const fetchTopListings = async () => {
       ),
       fetchJson<MDCol<MDChapter>>(
         "manga",
-        { limit: 10, order: { updatedAt: "desc", followedCount: "desc"} },
+        { limit: 10, order: { updatedAt: "desc", followedCount: "desc" } },
         { next: { revalidate: 60 } }
       ),
       fetchJson<MDCol<MDChapter>>(
         "manga",
-        { limit: 10, order: { updatedAt: "desc", rating: "desc", followedCount: "desc" } },
+        {
+          limit: 10,
+          order: { updatedAt: "desc", rating: "desc", followedCount: "desc" },
+        },
         { next: { revalidate: 60 } }
       ),
     ]);
@@ -300,10 +306,14 @@ export const fetchTopListings = async () => {
     // Explicit garbage collection
     reqTopFollowed = null;
     reqTopRated = null;
-    reqHot = null,
-    reqTopRead = null;
+    (reqHot = null), (reqTopRead = null);
 
-    return { popular: returnedTopFollowed, topRated: returnedTopRated, hot: returnedHot, topRead: returnedTopRead };
+    return {
+      popular: returnedTopFollowed,
+      topRated: returnedTopRated,
+      hot: returnedHot,
+      topRead: returnedTopRead,
+    };
   } catch (error) {
     console.error("Error fetching top listings:", error);
     throw error;
@@ -345,43 +355,43 @@ export function timeAgo(dateString: string) {
 }
 
 export const getFeaturedManga = async () => {
-    let randomOffset: any = Math.floor(Math.random() * 100);
-    let req: any = await fetchJson<MDCol<MDChapter>>(
-      "manga",
-      {
-        offset: randomOffset,
-        limit: 20,
-        order: { followedCount: "desc", rating: "desc" },
-      },
-      { cache: "no-store" }
-    );
-    let randomManga: any = Math.floor(Math.random() * 20);
-    let manga = await fetchCovers([req?.data[randomManga].id]);
-    let returnedManga: any = manga?.data?.map((manga: any) => ({
-      id: manga?.id,
-      tags: manga?.attributes?.tags,
-      cover: `https://uploads.mangadex.org/covers/${manga?.id}/${
-        manga?.relationships?.find((t: any) => t?.type === "cover_art")
-          ?.attributes?.fileName
-      }.256.jpg`,
-      title: manga?.attributes?.title,
-      contentRating: manga?.attributes?.contentRating,
-      publicationDemographic: manga?.attributes?.publicationDemographic,
-      status: manga?.attributes?.status,
-      description: manga?.attributes?.description,
-      type: manga?.type,
-    }));
+  let randomOffset: any = Math.floor(Math.random() * 100);
+  let req: any = await fetchJson<MDCol<MDChapter>>(
+    "manga",
+    {
+      offset: randomOffset,
+      limit: 20,
+      order: { followedCount: "desc", rating: "desc" },
+    },
+    { cache: "no-store" }
+  );
+  let randomManga: any = Math.floor(Math.random() * 20);
+  let manga = await fetchCovers([req?.data[randomManga].id]);
+  let returnedManga: any = manga?.data?.map((manga: any) => ({
+    id: manga?.id,
+    tags: manga?.attributes?.tags,
+    cover: `https://uploads.mangadex.org/covers/${manga?.id}/${
+      manga?.relationships?.find((t: any) => t?.type === "cover_art")
+        ?.attributes?.fileName
+    }.256.jpg`,
+    title: manga?.attributes?.title,
+    contentRating: manga?.attributes?.contentRating,
+    publicationDemographic: manga?.attributes?.publicationDemographic,
+    status: manga?.attributes?.status,
+    description: manga?.attributes?.description,
+    type: manga?.type,
+  }));
 
-    const featuredWithDate = {
-      manga: returnedManga[0],
-      date: new Date().toISOString().split("T")[0],
-    };
+  const featuredWithDate = {
+    manga: returnedManga[0],
+    date: new Date().toISOString().split("T")[0],
+  };
 
-    returnedManga = null;
-    manga = null;
-    req = null;
-    randomManga = null;
-    randomOffset = null;
-    
-    return featuredWithDate;
+  returnedManga = null;
+  manga = null;
+  req = null;
+  randomManga = null;
+  randomOffset = null;
+
+  return featuredWithDate;
 };

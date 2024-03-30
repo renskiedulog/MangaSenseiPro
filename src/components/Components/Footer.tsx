@@ -56,7 +56,7 @@ const bottomLinks = [
 
 const Footer = () => {
   return (
-    <section className="relative max-h-[50dvh] md:mt-5 mt-2 h-auto flex items-center gap-3 md:gap-5 justify-center py-5 md:py-10 flex-col w-full overflow-hidden">
+    <section className="relative max-h-[50dvh] md:mt-20 mt-5 h-auto flex items-center gap-3 md:gap-5 justify-center py-5 md:py-10 flex-col w-full overflow-hidden">
       <div className="absolute top-0 hidden dark:block left-0 h-full w-full footer-bg z-[-1]"></div>
       <Image
         src="/footer.jpg"

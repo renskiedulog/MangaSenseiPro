@@ -1,7 +1,6 @@
 import { timeAgo } from "@/utils/requests";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const Mangas = ({ mangas }: { mangas: any }) => {
   return mangas?.map((manga: any, idx: number) => {
@@ -10,13 +9,13 @@ const Mangas = ({ mangas }: { mangas: any }) => {
       <Link
         key={idx}
         href={`/${manga?.id}`}
-        className="w-full text-center group"
+        className="w-full text-center group leading-none"
         title={manga?.title["en"] || manga?.title["ja-ro"]}
       >
-        <Image
+        <img
           src={manga?.cover}
-          height={500}
-          width={400}
+          // height={500}
+          // width={400}
           alt={`manga-cover-${manga?.title}`}
           className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
         />
