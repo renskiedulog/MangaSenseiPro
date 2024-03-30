@@ -12,10 +12,10 @@ const Mangas = ({ mangas }: { mangas: any }) => {
         className="w-full text-center group leading-none"
         title={manga?.title["en"] || manga?.title["ja-ro"]}
       >
-        <img
+        <Image
           src={manga?.cover}
-          // height={500}
-          // width={400}
+          height={500}
+          width={400}
           alt={`manga-cover-${manga?.title}`}
           className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
         />
