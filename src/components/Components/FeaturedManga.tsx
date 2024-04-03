@@ -73,8 +73,8 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
     <Card className="relative my-2 border-accent bg-[var(--card-background)] overflow-hidden rounded-md w-full group">
       <Image
         alt="featured-cover"
-        height={500}
-        width={400}
+        height={300}
+        width={200}
         src={featuredManga?.cover}
         priority
         className="w-full max-h-80 object-cover object-center mx-auto border-accent group-hover:brightness-50 z-0"
@@ -112,7 +112,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
             {featuredManga?.status?.toUpperCase()}
           </p>
         </div>
-        <p className="text-white text-lg md:text-xl font-semibold pt-1">
+        <p className="text-white text-lg md:text-xl text-ellipsis line-clamp-3 font-semibold !leading-tight pt-1">
           {featuredManga?.title?.en || featuredManga?.title["ja-ro"]}
         </p>
         <div className="description group-hover:max-h-[300px]">

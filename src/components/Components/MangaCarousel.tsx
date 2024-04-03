@@ -8,11 +8,9 @@ import { BookmarkIcon } from "lucide-react";
 import CarouselLoader from "../Skeletons/CarouselLoader";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
-  console.log(carouselItems?.title)
   const carouselRef: any = useRef(null);
-  const [items, setItems] = useState([]);
-
-
+  const [items, setItems]: any = useState([]);
+  
   const contentTypeBg: any = {
     safe: "bg-[green]",
     suggestive: "bg-[#AC87C5]",
@@ -24,8 +22,27 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
   };
 
   useEffect(() => {
-    setItems(carouselItems);
+    setItems([]);
+    const fetchPromises = carouselItems.map((manga: any, index: number) => {
+      return fetch(`api/image?image=${manga.cover}`)
+        .then(res => res.json())
+        .then(res => {
+          manga.cover = res.imageSrc;
+          return manga;
+        });
+    });
+  
+    Promise.all(fetchPromises)
+      .then(updatedItems => {
+        setItems(updatedItems);
+      })
+      .catch(error => {
+        console.error("Error fetching images:", error);
+      });
   }, []);
+  
+
+  console.log(items)
 
   useEffect(() => {
     let intervalId: any;
@@ -82,22 +99,23 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
         items?.map((manga: any, index: number) => (
           <Card
             key={index}
-            className="relative min-w-[100%] snap-start overflow-hidden flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
+            className="relative min-w-[100%] snap-start overflow-hidden bg-[#fff1] flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
           >
             {/* Background */}
             <Image
               src={manga.cover}
-              height={500}
-              width={400}
+              height={300}
+              width={300}
               alt="featured-image-alt"
               className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
               priority
+              quality={20}
             />
             {/* Front */}
             <Image
-              height={500}
-              width={400}
-              src={manga?.cover}
+              height={300}
+              width={200}
+              src={manga.cover}
               alt="alt"
               className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
               priority
