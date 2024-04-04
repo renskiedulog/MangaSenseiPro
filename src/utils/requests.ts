@@ -1,3 +1,4 @@
+import axios from "axios";
 type Primitives = string | number | boolean | Date;
 type KeyValue<T = string> = { [key: string]: T };
 type QueryParam = {
@@ -147,6 +148,18 @@ const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
     },
     { cache: "force-cache" }
   );
+};
+
+export const fetchCover = async (image: string) => {
+  try {
+    const response = await axios.get(image, { responseType: "arraybuffer" });
+    const buffer = response.data; // No need to call .buffer()
+    const base64Image = Buffer.from(buffer).toString("base64");
+    const imageSrc = `data:image/jpeg;base64,${base64Image}`;
+    return imageSrc;
+  } catch (error) {
+    console.error("Error fetching image:", error);
+  }
 };
 
 export const fetchStats = async (array: any[]) => {
