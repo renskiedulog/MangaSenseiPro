@@ -9,7 +9,6 @@ import { fetchCover } from "@/utils/requests";
 
 const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
   const [featuredManga, setFeaturedManga]: any = useState(null);
-  const [cover, setCover]: any = useState(null);
 
   const contentTypeBg: any = {
     safe: "bg-[green]",
@@ -71,19 +70,13 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
     };
   }, [featuredManga]);
 
-  useEffect(() => {
-    if (featuredManga) {
-      fetchCover(featuredManga?.cover).then((res) => setCover(res));
-    }
-  }, [featuredManga]);
-
-  return featuredManga && cover ? (
+  return featuredManga ? (
     <Card className="relative my-2 border-accent bg-[var(--card-background)] overflow-hidden rounded-md w-full group">
       <Image
         alt="featured-cover"
         height={300}
         width={200}
-        src={cover}
+        src={featuredManga?.cover}
         priority
         className="w-full max-h-80 object-cover object-center mx-auto border-accent group-hover:brightness-50 z-0"
       />

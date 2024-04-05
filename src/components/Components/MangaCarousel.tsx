@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import CarouselLoader from "../Skeletons/CarouselLoader";
-import { fetchCover } from "@/utils/requests";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
   const carouselRef: any = useRef(null);
