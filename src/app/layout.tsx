@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import NavigationBar from "@/components/Components/NavigationBar";
 import { ThemeProvider } from "@/components/Components/ThemesProvider";
 import Footer from "./../components/Components/Footer";
+import { Suspense } from "react";
 
 const fontSans = FontSans({
   subsets: ["latin"],

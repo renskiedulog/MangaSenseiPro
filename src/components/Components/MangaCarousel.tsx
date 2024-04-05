@@ -66,19 +66,19 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
     };
   }, [carouselRef]);
 
-  useEffect(() => {
-    if (items.length === 0) {
-      setItems(carouselItems);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (items.length === 0) {
+  //     setItems(carouselItems);
+  //   }
+  // }, []);
 
-  return items && items.length !== 0 ? (
+  return carouselItems && carouselItems.length !== 0 ? (
     <section
       id="carousel"
       className="scrollbar-hidden flex overflow-x-auto snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
       ref={carouselRef}
     >
-      {items.map((manga: any, index: number) => (
+      {carouselItems.map((manga: any, index: number) => (
         <Card
           key={index}
           className="relative min-w-[100%] snap-start overflow-hidden bg-[#fff1] flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
@@ -186,7 +186,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
       ))}
     </section>
   ) : (
-    <CarouselLoader />
+    "loading"
   );
 };
 

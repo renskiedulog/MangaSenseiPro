@@ -101,32 +101,39 @@ const fetchJson = async <T = any>(
   const serializeParameters = (params?: QueryParam) => {
     if (!params) return "";
 
-    return Object.keys(params)
-      .map((key) => {
-        const value: any = params[key];
+    const paramStr = Object.entries(params)
+      .map(([key, value]) => {
         if (Array.isArray(value)) {
           return value.map((val) => `${key}[]=${val}`).join("&");
-        }
-        if (typeof value === "object") {
-          return Object.keys(value)
-            .map((k) => `${key}[${k}]=${value[k]}`)
+        } else if (typeof value === "object") {
+          return Object.entries(value)
+            .map(([k, v]) => `${key}[${k}]=${v}`)
             .join("&");
         }
         return `${key}=${value}`;
       })
       .join("&");
+
+    return paramStr;
   };
 
-  const pars = serializeParameters(params);
-  const uri = `https://api.mangadex.org/${url}?${pars}`;
-  const response = await fetch(uri, options);
+  const serializedParams = serializeParameters(params);
+  const uri = `https://api.mangadex.org/${url}?${serializedParams}`;
 
-  if (!response.ok)
-    throw new Error(
-      `Failed to fetch ${uri}: ${response.status} ${response.statusText}`
-    );
+  try {
+    const response = await fetch(uri, options);
 
-  return <T>await response?.json();
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch ${uri}: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error("Error in fetchJson:", error);
+    throw error;
+  }
 };
 
 const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
@@ -219,8 +226,8 @@ export const getLatestManga = async () => {
 
 export const Carousel = async () => {
   try {
-    let randomOffset: any = Math.floor(Math.random() * 200);
-    let req = await fetchJson<MDCol<MDChapter>>(
+    const randomOffset = Math.floor(Math.random() * 200);
+    const req = await fetchJson<MDCol<MDChapter>>(
       "manga",
       {
         offset: randomOffset,
@@ -229,51 +236,37 @@ export const Carousel = async () => {
       },
       { cache: "no-store" }
     );
-    let mangaIds: any = req?.data?.map((m) => m?.id);
-    let manga = await fetchCovers(mangaIds);
 
-    const getRandomManga = async (mangaData: MDCol, count: number) => {
-      const selectedManga: any = [];
-      const length: any = mangaData?.data?.length;
+    const mangaIds: any = req?.data?.map((m) => m?.id);
+    const manga = await fetchCovers(mangaIds);
 
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * length);
-        if (!selectedManga.includes(mangaData?.data[randomIndex])) {
-          selectedManga.push(mangaData?.data[randomIndex]);
-        }
-        if (selectedManga?.length === count) {
-          break;
-        }
-      }
-
-      return selectedManga;
+    const getRandomManga = (mangaData: MDCol, count: number) => {
+      const shuffledManga: any = mangaData?.data?.sort(
+        () => Math.random() - 0.5
+      );
+      return shuffledManga.slice(0, count);
     };
 
-    let selectedManga: any = await getRandomManga(manga, 6);
+    const selectedManga = getRandomManga(manga, 6);
 
     const returnedManga = await Promise.all(
-      selectedManga?.map(async (manga: any) => ({
-        id: manga?.id,
-        tags: manga?.attributes?.tags,
+      selectedManga.map(async (manga: any) => ({
+        id: manga.id,
+        tags: manga.attributes.tags,
         cover: await fetchCover(
-          `https://uploads.mangadex.org/covers/${manga?.id}/${
-            manga?.relationships?.find((t: any) => t?.type === "cover_art")
-              ?.attributes?.fileName
+          `https://uploads.mangadex.org/covers/${manga.id}/${
+            manga.relationships.find((t: any) => t.type === "cover_art")
+              .attributes.fileName
           }.256.jpg`
         ),
-        title: manga?.attributes?.title,
-        contentRating: manga?.attributes?.contentRating,
-        publicationDemographic: manga?.attributes?.publicationDemographic,
-        status: manga?.attributes?.status,
-        description: manga?.attributes?.description,
-        type: manga?.type,
+        title: manga.attributes.title,
+        contentRating: manga.attributes.contentRating,
+        publicationDemographic: manga.attributes.publicationDemographic,
+        status: manga.attributes.status,
+        description: manga.attributes.description,
+        type: manga.type,
       }))
     );
-
-    req = null;
-    mangaIds = null;
-    manga = null;
-    selectedManga = null;
 
     return returnedManga;
   } catch (error) {
@@ -284,65 +277,53 @@ export const Carousel = async () => {
 
 export const fetchTopListings = async () => {
   try {
-    let [reqTopFollowed, reqTopRated, reqHot, reqTopRead] = await Promise.all([
-      fetchJson<MDCol<MDChapter>>(
-        "manga",
-        { limit: 10, order: { followedCount: "desc" } },
-        { next: { revalidate: 3600 } }
-      ),
-      fetchJson<MDCol<MDChapter>>(
-        "manga",
-        { limit: 10, order: { rating: "desc" } },
-        { next: { revalidate: 3600 } }
-      ),
-      fetchJson<MDCol<MDChapter>>(
-        "manga",
-        { limit: 10, order: { updatedAt: "desc", followedCount: "desc" } },
-        { next: { revalidate: 60 } }
-      ),
-      fetchJson<MDCol<MDChapter>>(
-        "manga",
-        {
-          limit: 10,
-          order: { updatedAt: "desc", rating: "desc", followedCount: "desc" },
-        },
-        { next: { revalidate: 60 } }
-      ),
-    ]);
-
-    const returnedTopFollowed: any = reqTopFollowed?.data?.map(
-      (manga: any) => ({
-        id: manga.id,
-        title: manga.attributes.title,
-      })
+    const [reqTopFollowed, reqTopRated, reqHot, reqTopRead] = await Promise.all(
+      [
+        fetchJson<MDCol<MDChapter>>(
+          "manga",
+          { limit: 10, order: { followedCount: "desc" } },
+          { next: { revalidate: 3600 } }
+        ),
+        fetchJson<MDCol<MDChapter>>(
+          "manga",
+          { limit: 10, order: { rating: "desc" } },
+          { next: { revalidate: 3600 } }
+        ),
+        fetchJson<MDCol<MDChapter>>(
+          "manga",
+          {
+            limit: 10,
+            order: { updatedAt: "desc", followedCount: "desc", rating: "desc" },
+          },
+          { next: { revalidate: 60 } }
+        ),
+        fetchJson<MDCol<MDChapter>>(
+          "manga",
+          {
+            limit: 10,
+            order: {
+              updatedAt: "desc",
+              rating: "desc",
+              followedCount: "desc",
+            },
+          },
+          { next: { revalidate: 60 } }
+        ),
+      ]
     );
 
-    const returnedTopRated: any = reqTopRated?.data?.map((manga: any) => ({
-      id: manga.id,
-      title: manga.attributes.title,
-    }));
+    const extractData = (data: any) =>
+      data?.map((manga: any) => ({
+        id: manga.id,
+        title: manga.attributes.title,
+      }));
 
-    const returnedHot: any = reqHot?.data?.map((manga: any) => ({
-      id: manga.id,
-      title: manga.attributes.title,
-    }));
+    const popular = extractData(reqTopFollowed?.data);
+    const topRated = extractData(reqTopRated?.data);
+    const hot = extractData(reqHot?.data);
+    const topRead = extractData(reqTopRead?.data);
 
-    const returnedTopRead: any = reqTopRead?.data?.map((manga: any) => ({
-      id: manga.id,
-      title: manga.attributes.title,
-    }));
-
-    // Explicit garbage collection
-    reqTopFollowed = null;
-    reqTopRated = null;
-    (reqHot = null), (reqTopRead = null);
-
-    return {
-      popular: returnedTopFollowed,
-      topRated: returnedTopRated,
-      hot: returnedHot,
-      topRead: returnedTopRead,
-    };
+    return { popular, topRated, hot, topRead };
   } catch (error) {
     console.error("Error fetching top listings:", error);
     throw error;
@@ -384,47 +365,49 @@ export function timeAgo(dateString: string) {
 }
 
 export const getFeaturedManga = async () => {
-  let randomOffset: any = Math.floor(Math.random() * 100);
-  let req: any = await fetchJson<MDCol<MDChapter>>(
-    "manga",
-    {
-      offset: randomOffset,
-      limit: 20,
-      order: { followedCount: "desc", rating: "desc" },
-    },
-    { cache: "force-cache" }
-  );
-  let randomManga: any = Math.floor(Math.random() * 20);
-  let manga: any = await fetchCovers([req?.data[randomManga].id]);
-  let returnedManga: any = await Promise.all(
-    manga?.data?.map(async (manga: any) => ({
-      id: manga?.id,
-      tags: manga?.attributes?.tags,
-      cover: await fetchCover(
-        `https://uploads.mangadex.org/covers/${manga?.id}/${
-          manga?.relationships?.find((t: any) => t?.type === "cover_art")
-            ?.attributes?.fileName
-        }.256.jpg`
-      ),
-      title: manga?.attributes?.title,
-      contentRating: manga?.attributes?.contentRating,
-      publicationDemographic: manga?.attributes?.publicationDemographic,
-      status: manga?.attributes?.status,
-      description: manga?.attributes?.description,
-      type: manga?.type,
-    }))
-  );
+  try {
+    const randomOffset = Math.floor(Math.random() * 100);
+    const req = await fetchJson<MDCol<MDChapter>>(
+      "manga",
+      {
+        offset: randomOffset,
+        limit: 20,
+        order: { followedCount: "desc", rating: "desc" },
+      },
+      { cache: "force-cache" }
+    );
 
-  const featuredWithDate = {
-    manga: await returnedManga[0],
-    date: new Date().toISOString().split("T")[0],
-  };
+    const randomIndex = Math.floor(Math.random() * 20);
+    const mangaId: any = req?.data[randomIndex]?.id;
+    const manga: any = await fetchCovers([mangaId]);
 
-  returnedManga = null;
-  manga = null;
-  req = null;
-  randomManga = null;
-  randomOffset = null;
+    const returnedManga: any = await Promise.all(
+      manga?.data?.map(async (manga: any) => ({
+        id: manga.id,
+        tags: manga.attributes.tags,
+        cover: await fetchCover(
+          `https://uploads.mangadex.org/covers/${manga.id}/${
+            manga.relationships.find((t: any) => t.type === "cover_art")
+              .attributes.fileName
+          }.256.jpg`
+        ),
+        title: manga.attributes.title,
+        contentRating: manga.attributes.contentRating,
+        publicationDemographic: manga.attributes.publicationDemographic,
+        status: manga.attributes.status,
+        description: manga.attributes.description,
+        type: manga.type,
+      }))
+    );
 
-  return featuredWithDate;
+    const featuredWithDate = {
+      manga: returnedManga[0],
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    return featuredWithDate;
+  } catch (error) {
+    console.error("Error fetching featured manga:", error);
+    throw error;
+  }
 };

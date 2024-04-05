@@ -18,12 +18,12 @@ export default async function Home() {
   return (
     <main className="min-h-[90vh] flex md:flex-row flex-col sm:grid-cols-1 py-2 gap-2 md:mx-5 mx-1 justify-center">
       <div className="w-full min-h-screen md:w-9/12">
-        <MangaCarousel carouselItems={carouselItems} />
-        <MangaFeed />
+        <MangaCarousel key="manga-carousel" carouselItems={carouselItems} />
+        <MangaFeed key="manga-feed" />
       </div>
       <div className="w-full !relative md:mt-0 md:w-3/12">
-        <PopularMangas mangas={popular} />
-        <StickyHelper featured={featured} />
+        <PopularMangas key="top-mangas" mangas={popular} />
+        <StickyHelper key="helper" featured={featured} />
       </div>
     </main>
   );
