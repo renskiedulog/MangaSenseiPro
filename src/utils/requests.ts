@@ -227,7 +227,7 @@ export const Carousel = async () => {
         limit: 20,
         order: { followedCount: "desc", rating: "desc" },
       },
-      { cache: "force-cache" }
+      { cache: "no-store" }
     );
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
