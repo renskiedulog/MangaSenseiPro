@@ -152,8 +152,14 @@ const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
 
 export const fetchCover = async (image: string) => {
   try {
-    const response = await axios.get(image, { responseType: "arraybuffer" });
-    const buffer = response.data; // No need to call .buffer()
+    const response = await fetch(image, { cache: "force-cache" });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch image (${response.status}): ${response.statusText}`
+      );
+    }
+
+    const buffer = await response.arrayBuffer();
     const base64Image = Buffer.from(buffer).toString("base64");
     const imageSrc = `data:image/jpeg;base64,${base64Image}`;
     return imageSrc;
@@ -192,17 +198,21 @@ const fetchLatestChapters = (offset = 0, limit = 100) => {
 export const getLatestManga = async () => {
   const latest = await fetchLatestChapters(0, 60);
   const latestIds: any = latest?.data.map((k: any) => k.id);
-  const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
+  const covers: any = await fetchCovers(latestIds, { updatedAt: "desc" });
 
-  const returnedManga = covers?.data?.map((k: any) => ({
-    id: k?.id,
-    updatedAt: k?.attributes?.updatedAt,
-    cover: `https://uploads.mangadex.org/covers/${k?.id}/${
-      k?.relationships?.find((t: any) => t?.type === "cover_art")?.attributes
-        ?.fileName
-    }.256.jpg`,
-    title: k?.attributes?.title,
-  }));
+  const returnedManga = await Promise.all(
+    covers?.data?.map(async (k: any) => ({
+      id: k?.id,
+      updatedAt: k?.attributes?.updatedAt,
+      cover: await fetchCover(
+        `https://uploads.mangadex.org/covers/${k?.id}/${
+          k?.relationships?.find((t: any) => t?.type === "cover_art")
+            ?.attributes?.fileName
+        }.256.jpg`
+      ),
+      title: k?.attributes?.title,
+    }))
+  );
 
   return returnedManga;
 };
@@ -215,7 +225,7 @@ export const Carousel = async () => {
         limit: 100,
         order: { followedCount: "desc", rating: "desc" },
       },
-      { cache: "no-store" }
+      { cache: "force-cache" }
     );
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
