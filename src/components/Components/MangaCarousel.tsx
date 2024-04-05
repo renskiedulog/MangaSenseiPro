@@ -8,6 +8,7 @@ import { BookmarkIcon } from "lucide-react";
 import CarouselLoader from "../Skeletons/CarouselLoader";
 
 const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
+  const [items, setItems] = useState([]);
   const carouselRef: any = useRef(null);
 
   const contentTypeBg: any = {
@@ -65,13 +66,19 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
     };
   }, [carouselRef]);
 
-  return carouselItems.length !== 0 ? (
+  useEffect(() => {
+    if (items.length === 0) {
+      setItems(carouselItems);
+    }
+  }, []);
+
+  return items && items.length !== 0 ? (
     <section
       id="carousel"
       className="scrollbar-hidden flex overflow-x-auto snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
       ref={carouselRef}
     >
-      {carouselItems.map((manga: any, index: number) => (
+      {items.map((manga: any, index: number) => (
         <Card
           key={index}
           className="relative min-w-[100%] snap-start overflow-hidden bg-[#fff1] flex flex-row-reverse md:flex-row justify-center md:gap-5 px-5 gap-2 items-center dark:border-accent"
@@ -83,7 +90,6 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={300}
             alt="featured-image-alt"
             className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
-            priority
             quality={20}
           />
           {/* Front */}
@@ -93,7 +99,6 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             src={manga?.cover}
             alt="alt"
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
-            priority
           />
           <div className="z-20 w-7/12 md:max-w-[55vw] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
             <div className="w-full">
