@@ -1,4 +1,4 @@
-import { fetchCover, timeAgo } from "@/utils/requests";
+import { timeAgo } from "@/utils/requests";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,6 +16,7 @@ const Mangas = async ({ mangas }: { mangas: any }) => {
           src={manga?.cover}
           height={300}
           width={200}
+          quality={10}
           alt={manga.title}
           className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
         />

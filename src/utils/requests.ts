@@ -196,7 +196,7 @@ const fetchLatestChapters = (offset = 0, limit = 100) => {
 };
 
 export const getLatestManga = async () => {
-  const latest = await fetchLatestChapters(0, 60);
+  const latest = await fetchLatestChapters(0, 30);
   const latestIds: any = latest?.data.map((k: any) => k.id);
   const covers: any = await fetchCovers(latestIds, { updatedAt: "desc" });
 
@@ -219,10 +219,12 @@ export const getLatestManga = async () => {
 
 export const Carousel = async () => {
   try {
+    let randomOffset: any = Math.floor(Math.random() * 200);
     let req = await fetchJson<MDCol<MDChapter>>(
       "manga",
       {
-        limit: 100,
+        offset: randomOffset,
+        limit: 20,
         order: { followedCount: "desc", rating: "desc" },
       },
       { cache: "force-cache" }
@@ -304,7 +306,7 @@ export const fetchTopListings = async () => {
           limit: 10,
           order: { updatedAt: "desc", rating: "desc", followedCount: "desc" },
         },
-        { next: { revalidate: 60 } }
+        { next: { revalidate: 1800 } }
       ),
     ]);
 
@@ -390,7 +392,7 @@ export const getFeaturedManga = async () => {
       limit: 20,
       order: { followedCount: "desc", rating: "desc" },
     },
-    { cache: "no-store" }
+    { cache: "force-cache" }
   );
   let randomManga: any = Math.floor(Math.random() * 20);
   let manga: any = await fetchCovers([req?.data[randomManga].id]);
@@ -424,6 +426,5 @@ export const getFeaturedManga = async () => {
   randomManga = null;
   randomOffset = null;
 
-  console.log(featuredWithDate);
   return featuredWithDate;
 };

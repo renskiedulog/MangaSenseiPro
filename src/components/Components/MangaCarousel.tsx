@@ -98,6 +98,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={200}
             src={manga?.cover}
             alt="alt"
+            quality={50}
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
           />
           <div className="z-20 w-7/12 md:max-w-[55vw] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">
