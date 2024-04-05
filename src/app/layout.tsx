@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <SpeedInsights />
           <div className="pt-[3.5rem] scrolling-container">
             <NavigationBar />
             {children}
