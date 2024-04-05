@@ -1,7 +1,12 @@
 import MangaCarousel from "@/components/Components/MangaCarousel";
 import PopularMangas from "./../components/Components/PopularMangas";
 import MangaFeed from "./../components/Components/MangaFeed";
-import { Carousel, fetchTopListings, getFeaturedManga } from "@/utils/requests";
+import {
+  Carousel,
+  fetchCover,
+  fetchTopListings,
+  getFeaturedManga,
+} from "@/utils/requests";
 import StickyHelper from "@/components/Components/StickyHelper";
 
 export default async function Home() {

@@ -27,7 +27,10 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
 
   return displayed ? (
     <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
-      <header key="header" className="flex items-center border-b border-accent">
+      <header
+        key="header"
+        className="flex flex-wrap items-center border-b border-accent"
+      >
         {buttons?.map((btn, idx) => (
           <Button
             key={idx}

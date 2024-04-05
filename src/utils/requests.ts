@@ -259,7 +259,7 @@ export const Carousel = async () => {
     manga = null;
     selectedManga = null;
 
-    return returnedManga;
+    return await returnedManga;
   } catch (error) {
     console.error("Error fetching carousel:", error);
     throw error;
@@ -380,13 +380,15 @@ export const getFeaturedManga = async () => {
   );
   let randomManga: any = Math.floor(Math.random() * 20);
   let manga = await fetchCovers([req?.data[randomManga].id]);
-  let returnedManga: any = manga?.data?.map((manga: any) => ({
+  let returnedManga: any = manga?.data?.map(async (manga: any) => ({
     id: manga?.id,
     tags: manga?.attributes?.tags,
-    cover: `https://uploads.mangadex.org/covers/${manga?.id}/${
-      manga?.relationships?.find((t: any) => t?.type === "cover_art")
-        ?.attributes?.fileName
-    }.256.jpg`,
+    cover: await fetchCover(
+      `https://uploads.mangadex.org/covers/${manga?.id}/${
+        manga?.relationships?.find((t: any) => t?.type === "cover_art")
+          ?.attributes?.fileName
+      }.256.jpg`
+    ),
     title: manga?.attributes?.title,
     contentRating: manga?.attributes?.contentRating,
     publicationDemographic: manga?.attributes?.publicationDemographic,
@@ -396,7 +398,7 @@ export const getFeaturedManga = async () => {
   }));
 
   const featuredWithDate = {
-    manga: returnedManga[0],
+    manga: await returnedManga[0],
     date: new Date().toISOString().split("T")[0],
   };
 
