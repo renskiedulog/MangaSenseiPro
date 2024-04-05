@@ -68,11 +68,11 @@
 
 .overlay .description {
   max-height: 0;
-  transition: all .9s ease-in-out;
+  transition: all .5s ease-in-out;
 }
 
 .animate-hover-in {
-  animation: hover-in .5s ease-in-out;
+  animation: hover-in .3s ease-in-out;
 }
 
 .animate-hover-out {

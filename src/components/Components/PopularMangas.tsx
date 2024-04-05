@@ -29,7 +29,8 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
     <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
       <header key="header" className="flex items-center border-b border-accent">
         {buttons?.map((btn, idx) => (
-          <Button key={idx}
+          <Button
+            key={idx}
             variant={`${toggle === btn.tag ? "secondary" : "ghost"}`}
             className={`px-3 rounded-none flex-grow py-2 ${
               toggle === btn.tag ? "text-blue-500" : ""
