@@ -227,7 +227,7 @@ export const Carousel = async () => {
         limit: 20,
         order: { followedCount: "desc", rating: "desc" },
       },
-      { cache: "no-store" }
+      { next: { revalidate: 60 } }
     );
     let mangaIds: any = req?.data?.map((m) => m?.id);
     let manga = await fetchCovers(mangaIds);
@@ -306,7 +306,7 @@ export const fetchTopListings = async () => {
           limit: 10,
           order: { updatedAt: "desc", rating: "desc", followedCount: "desc" },
         },
-        { next: { revalidate: 1800 } }
+        { next: { revalidate: 60 } }
       ),
     ]);
 
