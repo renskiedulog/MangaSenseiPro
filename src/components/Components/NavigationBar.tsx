@@ -30,7 +30,7 @@ const font = Permanent_Marker({
 
 const NavigationBar = () => {
   return (
-    <NavigationMenu className="fixed top-0 z-50 max-w-none w-full justify-between border-b border-border bg-background left-0 h-[3.5rem] md:px-10 px-5">
+    <NavigationMenu className="fixed max-w-screen-2xl top-0 z-50 w-full justify-between border-b border-border bg-background left-1/2 -translate-x-1/2 h-[3.5rem] md:px-10 px-5">
       <NavigationMenuList>
         <Link href="/" className="font-bold text-lg flex items-center gap-2">
           <p className={`text-xl md:text-3xl text-primary font-bold tracking-tight transition hover:scale-105 ${font.className}`}>Manga<span className="font-normal">Sensei</span></p>

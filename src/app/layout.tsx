@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import NavigationBar from "@/components/Components/NavigationBar";
 import { ThemeProvider } from "@/components/Components/ThemesProvider";
 import Footer from "./../components/Components/Footer";
-import { Suspense } from "react";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -23,7 +22,7 @@ export default function RootLayout({
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-max bg-background font-sans antialiased",
           fontSans.variable
         )}
       >
@@ -34,7 +33,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SpeedInsights />
-          <div className="pt-[3.5rem] scrolling-container">
+          <div className="pt-[3.5rem] scrolling-container max-w-screen-2xl mx-auto">
             <NavigationBar />
             {children}
             <Footer />

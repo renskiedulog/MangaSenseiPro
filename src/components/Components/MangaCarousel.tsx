@@ -66,13 +66,13 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
     };
   }, [carouselRef]);
 
-  // useEffect(() => {
-  //   if (items.length === 0) {
-  //     setItems(carouselItems);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (items.length === 0) {
+      setItems(carouselItems);
+    }
+  }, []);
 
-  return carouselItems && carouselItems.length !== 0 ? (
+  return items && items?.length !== 0 ? (
     <section
       id="carousel"
       className="scrollbar-hidden flex overflow-x-auto snap-x snap-mandatory overflow-y-hidden min-h-[20rem]"
@@ -173,12 +173,14 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                 >
                   <BookmarkIcon />
                 </Button>
+                <Link href={`/${manga?.id}`}>
                 <Button
                   className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
                   size="sm"
                 >
                   Read
                 </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -186,7 +188,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
       ))}
     </section>
   ) : (
-    "loading"
+    <CarouselLoader />
   );
 };
 

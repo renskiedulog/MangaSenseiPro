@@ -48,7 +48,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
       {displayed?.map((manga: any, index: number) => {
         return (
           <Link
-            href={`/manga/${manga?.id}`}
+            href={`/${manga?.id}`}
             key={index}
             className="line-clamp-2 leading-tight group font-semibold"
           >

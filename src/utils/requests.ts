@@ -136,7 +136,7 @@ const fetchJson = async <T = any>(
   }
 };
 
-const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
+export const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
   return fetchJson<MDCol<MDManga>>(
     "manga",
     {
@@ -198,7 +198,7 @@ const fetchLatestChapters = (offset = 0, limit = 100) => {
       limit,
       order: { updatedAt: "desc" },
     },
-    { next: { revalidate: 3600 } }
+    { next: { revalidate: 60 } }
   );
 };
 
@@ -207,7 +207,7 @@ export const getLatestManga = async () => {
   const latestIds: any = latest?.data.map((k: any) => k.id);
   const covers: any = await fetchCovers(latestIds, { updatedAt: "desc" });
 
-  const returnedManga = await Promise.all(
+  const returnedManga: any = await Promise.all(
     covers?.data?.map(async (k: any) => ({
       id: k?.id,
       updatedAt: k?.attributes?.updatedAt,
@@ -293,7 +293,7 @@ export const fetchTopListings = async () => {
           "manga",
           {
             limit: 10,
-            order: { updatedAt: "desc", followedCount: "desc", rating: "desc" },
+            order: { updatedAt: "desc", followedCount: "desc" },
           },
           { next: { revalidate: 60 } }
         ),
@@ -411,3 +411,4 @@ export const getFeaturedManga = async () => {
     throw error;
   }
 };
+

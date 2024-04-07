@@ -16,8 +16,8 @@ export default async function Home() {
   const featured = await getFeaturedManga();
 
   return (
-    <main className="min-h-[90vh] flex md:flex-row flex-col sm:grid-cols-1 py-2 gap-2 md:mx-5 mx-1 justify-center">
-      <div className="w-full min-h-screen md:w-9/12">
+    <main className="flex md:flex-row flex-col sm:grid-cols-1 py-2 gap-2 md:mx-5 mx-1 justify-center">
+      <div className="w-full md:w-9/12">
         <MangaCarousel key="manga-carousel" carouselItems={carouselItems} />
         <MangaFeed key="manga-feed" />
       </div>
