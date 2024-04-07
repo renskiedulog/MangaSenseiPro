@@ -22,7 +22,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
 
   useEffect(() => {
     const getFeaturedManga = async () => {
-      const storedFeatured = localStorage.getItem("featured");
+      const storedFeatured = localStorage?.getItem("featured");
       if (storedFeatured) {
         const { manga, date } = JSON.parse(storedFeatured);
         const storedDate = new Date(date);
