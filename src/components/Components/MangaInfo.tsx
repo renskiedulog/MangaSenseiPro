@@ -1,10 +1,11 @@
-import { fetchCovers } from "@/utils/requests";
+"use client"
 import React from "react";
 
-const MangaInfo = async ({ mangaId }: { mangaId: string }) => {
-  "use server"
-  const manga = await fetchCovers([mangaId]);
-  return <div>MangaInfo</div>;
+const MangaInfo = ({ manga }: any) => {
+  console.log(manga)
+  return <section>
+    
+  </section>;
 };
 
 export default MangaInfo;

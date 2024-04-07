@@ -2,14 +2,16 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { FilterIcon, ShuffleIcon } from "lucide-react";
 import FeaturedManga from "./FeaturedManga";
+import { getFeaturedManga } from "@/utils/requests";
 
-const StickyHelper = ({ featured }: { featured: any }) => {
+const StickyHelper = async () => {
+  const featuredManga = await getFeaturedManga();
 
   return (
     <div
       className="static md:sticky top-0 md:top-16 md:mr-6 transition w-full"
     >
-      <FeaturedManga newFeatured={featured} />
+      <FeaturedManga newFeatured={featuredManga} />
       {/* Filter And Random Helper */}
       <Card className="bg-[var(--card-background)] p-2 border-accent">
         <h1 className="text-lg font-bold text-center py-2">
