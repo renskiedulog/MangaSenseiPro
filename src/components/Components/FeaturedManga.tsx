@@ -7,18 +7,18 @@ import { BookmarkIcon } from "lucide-react";
 import FeaturedLoader from "../Skeletons/FeaturedLoader";
 import { fetchCover } from "@/utils/requests";
 
+const contentTypeBg: any = {
+  safe: "bg-[green]",
+  suggestive: "bg-[#AC87C5]",
+  pornographic: "bg-[crimson]",
+  erotica: "bg-[#FF004D]",
+  completed: "bg-[orange]",
+  ongoing: "bg-[green]",
+  cancelled: "bg-[red]",
+};
+
 const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
   const [featuredManga, setFeaturedManga]: any = useState(null);
-
-  const contentTypeBg: any = {
-    safe: "bg-[green]",
-    suggestive: "bg-[#AC87C5]",
-    pornographic: "bg-[crimson]",
-    erotica: "bg-[#FF004D]",
-    completed: "bg-[orange]",
-    ongoing: "bg-[green]",
-    cancelled: "bg-[red]",
-  };
 
   useEffect(() => {
     const getFeaturedManga = async () => {
@@ -118,7 +118,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
         </p>
         <div className="description group-hover:max-h-[300px]">
           <p className="text-sm line-clamp-[8] text-white text-ellipsis">
-            {featuredManga?.description.en}
+            {featuredManga?.description}
           </p>
           <div className="flex items-center py-1 gap-2">
             <Button

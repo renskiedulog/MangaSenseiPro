@@ -136,7 +136,12 @@ const fetchJson = async <T = any>(
   }
 };
 
-export const fetchCovers = (ids: string[], order = {}, offset = 0, limit = 100) => {
+export const fetchCovers = (
+  ids: string[],
+  order = {},
+  offset = 0,
+  limit = 100
+) => {
   return fetchJson<MDCol<MDManga>>(
     "manga",
     {
@@ -173,21 +178,6 @@ export const fetchCover = async (image: string) => {
   } catch (error) {
     console.error("Error fetching image:", error);
   }
-};
-
-export const fetchStats = async (array: any[]) => {
-  const stats = await Promise.all(
-    array.map(async (manga) => {
-      const response = await fetchJson(
-        `/statistics/manga/${manga?.id}`,
-        {},
-        { cache: "force-cache" }
-      );
-      return response?.statistics[manga?.id];
-    })
-  );
-
-  return stats;
 };
 
 const fetchLatestChapters = (offset = 0, limit = 100) => {
@@ -263,7 +253,7 @@ export const Carousel = async () => {
         contentRating: manga.attributes.contentRating,
         publicationDemographic: manga.attributes.publicationDemographic,
         status: manga.attributes.status,
-        description: manga.attributes.description,
+        description: manga.attributes.description.en,
         type: manga.type,
       }))
     );
@@ -395,7 +385,7 @@ export const getFeaturedManga = async () => {
         contentRating: manga.attributes.contentRating,
         publicationDemographic: manga.attributes.publicationDemographic,
         status: manga.attributes.status,
-        description: manga.attributes.description,
+        description: manga.attributes.description.en,
         type: manga.type,
       }))
     );
@@ -412,3 +402,62 @@ export const getFeaturedManga = async () => {
   }
 };
 
+export const getMangaInfo = async (id: string) => {
+  const manga: any = await fetchCovers([id]);
+
+  const returnedManga = await Promise.all(
+    manga?.data?.map(async (manga: any) => ({
+      id: manga.id,
+      tags: manga.attributes.tags,
+      cover: await fetchCover(
+        `https://uploads.mangadex.org/covers/${manga.id}/${
+          manga.relationships.find((t: any) => t.type === "cover_art")
+            .attributes.fileName
+        }.256.jpg`
+      ),
+      title: manga.attributes.title,
+      contentRating: manga.attributes.contentRating,
+      publicationDemographic: manga.attributes.publicationDemographic,
+      status: manga.attributes.status,
+      updatedAt: manga.attributes.updatedAt,
+      description: manga.attributes.description.en,
+      type: manga.type,
+    }))
+  );
+
+  const response = await fetchJson(
+    `statistics/manga/${id}`,
+    {},
+    { cache: "force-cache" }
+  );
+
+  return { mangaInfo: returnedManga[0], mangaStats: response?.statistics[id] };
+};
+
+export function formatDate(inputDate: string) {
+  // Parse the given date string
+  let originalDate = new Date(inputDate);
+
+  // Months array to convert month index to month name
+  let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  // Get the components of the original date
+  let hours = originalDate.getHours();
+  let minutes: any = originalDate.getMinutes();
+  let month = months[originalDate.getMonth()];
+  let day = originalDate.getDate();
+  let year = originalDate.getFullYear();
+
+  // Convert hours to 12-hour format
+  let ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+  // Add leading zero to minutes if necessary
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  // Construct the formatted date string
+  let formattedDate = hours + ':' + minutes + ' ' + ampm + ' ' + month + ' ' + day + ', ' + year;
+
+  return formattedDate;
+}

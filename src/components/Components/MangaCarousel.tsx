@@ -160,7 +160,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               <div className="py-2 text-sm font-semibold text-white md:text-base">
                 <h5>Summary</h5>
                 <p className="text-xs md:text-sm opacity-70 font-normal w-full whitespace-nowrap pt-1 text-wrap mx-auto line-clamp-5 leading-tight md:leading-5">
-                  {manga?.description["en"]}
+                  {manga?.description}
                 </p>
               </div>
             </div>
