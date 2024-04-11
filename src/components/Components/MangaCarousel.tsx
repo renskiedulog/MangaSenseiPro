@@ -174,12 +174,12 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
                   <BookmarkIcon />
                 </Button>
                 <Link href={`/${manga?.id}`}>
-                <Button
-                  className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
-                  size="sm"
-                >
-                  Read
-                </Button>
+                  <Button
+                    className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
+                    size="sm"
+                  >
+                    Read
+                  </Button>
                 </Link>
               </div>
             </div>

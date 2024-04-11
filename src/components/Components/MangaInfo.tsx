@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import Description from "./Description";
+import { formatDate } from "@/utils/utils";
 
 const contentTypeBg: any = {
   safe: "bg-[green]",
@@ -22,7 +23,7 @@ const MangaInfo = ({ manga }: any) => {
     manga && (
       <section className="dark:bg-[#fff1] p-5 flex flex-col gap-5 bg-[#0001] w-full rounded-md">
         <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-          <div className="w-48 flex flex-col gap-1 md:gap-2">
+          <div className="mx-auto md:mx-0 w-2/3 md:w-48 flex flex-col gap-1 md:gap-2">
             <Image
               src={mangaInfo?.cover}
               height={500}
@@ -30,11 +31,33 @@ const MangaInfo = ({ manga }: any) => {
               alt={mangaInfo?.title}
               className="rounded aspect-[1/1.4] object-cover w-full"
             />
-            <div className="flex items-center gap-1">
-              <Button className="bg-blue-600 w-full p-0 hover:bg-blue-500 text-white text-sm shadow-none tracking-wider rounded-sm uppercase">
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-1">
+              <Button className="bg-blue-600 col-span-2 md:col-span-1 w-full p-0 mb-1 hover:bg-blue-500 text-white text-sm shadow-none tracking-wider rounded-sm uppercase">
                 <BookmarkIcon />
                 Bookmark
               </Button>
+              {mangaStats?.follows && (
+                <div className="dark:bg-[#fff1] opacity-70 uppercase min-h-10 px-2 py-1 rounded flex items-center justify-between bg-[#0001]">
+                  <p className="text-xs">Follows</p>
+                  <p className="text-xs font-semibold">{mangaStats?.follows}</p>
+                </div>
+              )}
+              {mangaStats?.rating?.average && (
+                <div className="dark:bg-[#fff1] opacity-70 uppercase min-h-10 px-2 py-1 rounded flex items-center justify-between bg-[#0001]">
+                  <p className="text-xs">Rating</p>
+                  <p className="text-xs font-semibold">
+                    {mangaStats?.rating?.average?.toFixed(2)}
+                  </p>
+                </div>
+              )}
+              {mangaInfo?.updatedAt && (
+                <div className="dark:bg-[#fff1] col-span-2 md:col-span-1 opacity-70 uppercase min-h-10 px-2 py-1 rounded flex items-center justify-between bg-[#0001]">
+                  <p className="text-xs">Updated</p>
+                  <p className="text-right w-4/6 text-xs font-semibold">
+                    {formatDate(mangaInfo?.updatedAt)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-1">

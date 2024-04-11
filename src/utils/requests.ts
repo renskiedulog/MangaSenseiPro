@@ -320,40 +320,6 @@ export const fetchTopListings = async () => {
   }
 };
 
-export function timeAgo(dateString: string) {
-  const providedDate: any = new Date(dateString);
-  const now: any = new Date();
-
-  const timeDifferenceInSeconds = Math.floor((now - providedDate) / 1000);
-
-  if (providedDate > now) {
-    return null;
-  }
-
-  if (timeDifferenceInSeconds < 60) {
-    return `${timeDifferenceInSeconds} second${
-      timeDifferenceInSeconds !== 1 ? "s" : ""
-    } ago`;
-  } else if (timeDifferenceInSeconds < 3600) {
-    const minutesAgo = Math.floor(timeDifferenceInSeconds / 60);
-    return `${minutesAgo} minute${minutesAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 86400) {
-    const hoursAgo = Math.floor(timeDifferenceInSeconds / 3600);
-    return `${hoursAgo} hour${hoursAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 2592000) {
-    // Less than 30 days (approx. a month)
-    const daysAgo = Math.floor(timeDifferenceInSeconds / 86400);
-    return `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`;
-  } else if (timeDifferenceInSeconds < 31536000) {
-    // Less than 365 days (approx. a year)
-    const monthsAgo = Math.floor(timeDifferenceInSeconds / 2592000);
-    return `${monthsAgo} month${monthsAgo !== 1 ? "s" : ""} ago`;
-  } else {
-    const yearsAgo = Math.floor(timeDifferenceInSeconds / 31536000);
-    return `${yearsAgo} year${yearsAgo !== 1 ? "s" : ""} ago`;
-  }
-}
-
 export const getFeaturedManga = async () => {
   try {
     const randomOffset = Math.floor(Math.random() * 100);
@@ -433,31 +399,3 @@ export const getMangaInfo = async (id: string) => {
 
   return { mangaInfo: returnedManga[0], mangaStats: response?.statistics[id] };
 };
-
-export function formatDate(inputDate: string) {
-  // Parse the given date string
-  let originalDate = new Date(inputDate);
-
-  // Months array to convert month index to month name
-  let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-  // Get the components of the original date
-  let hours = originalDate.getHours();
-  let minutes: any = originalDate.getMinutes();
-  let month = months[originalDate.getMonth()];
-  let day = originalDate.getDate();
-  let year = originalDate.getFullYear();
-
-  // Convert hours to 12-hour format
-  let ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // Handle midnight (0 hours)
-
-  // Add leading zero to minutes if necessary
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-
-  // Construct the formatted date string
-  let formattedDate = hours + ':' + minutes + ' ' + ampm + ' ' + month + ' ' + day + ', ' + year;
-
-  return formattedDate;
-}
