@@ -8,7 +8,6 @@ import TopMangasLoader from "../Skeletons/TopMangasLoader";
 const buttons = [
   { name: "Popular", tag: "popular" },
   { name: "Top", tag: "topRated" },
-  { name: "Hot", tag: "hot" },
   { name: "Top Read", tag: "topRead" },
 ];
 
@@ -26,7 +25,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
   };
 
   return displayed ? (
-    <Card className="shadow-none bg-[var(--card-background)] color-text h-max w-full overflow-hidden rounded-md border-accent">
+    <Card className="shadow-none bg-[var(--card-background)] min-w-60 color-text h-max w-full overflow-hidden rounded-md border-accent">
       <header
         key="header"
         className="flex flex-wrap items-center border-b border-accent"
@@ -60,7 +59,7 @@ const PopularMangas = ({ mangas }: { mangas: any }) => {
                 {index + 1}
               </p>
               <p className="text-ellipsis line-clamp-2 w-full">
-                {manga.title["en"] || manga.title["ja-ro"]}
+                {manga.title}
               </p>
             </Card>
           </Link>

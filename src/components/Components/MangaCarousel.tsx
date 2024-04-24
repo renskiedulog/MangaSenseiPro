@@ -135,9 +135,9 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
               {/* Title */}
               <h1
                 className="text-xl md:text-3xl leading-tight pt-1 md:py-0 line-clamp-2 md:line-clamp-1 text-white shadow-sm font-semibold md:font-bold"
-                title={manga?.title?.en || manga?.title["ja-ro"]}
+                title={manga?.title}
               >
-                {manga?.title?.en || manga?.title["ja-ro"]}
+                {manga?.title}
               </h1>
               {/* Genres */}
               <div className="md:text-sm md:h-auto max-h-8 text-white overflow-hidden text-xs md:max-w-none max-w-60 flex flex-wrap">

@@ -1,4 +1,5 @@
 import axios from "axios";
+
 type Primitives = string | number | boolean | Date;
 type KeyValue<T = string> = { [key: string]: T };
 type QueryParam = {
@@ -97,8 +98,8 @@ const fetchJson = async <T = any>(
   url: string,
   params?: QueryParam,
   options?: Object
-) => {
-  const serializeParameters = (params?: QueryParam) => {
+): Promise<T> => {
+  const serializeParameters = (params?: QueryParam): string => {
     if (!params) return "";
 
     const paramStr = Object.entries(params)
@@ -136,12 +137,12 @@ const fetchJson = async <T = any>(
   }
 };
 
-export const fetchCovers = (
+export const fetchCovers = async (
   ids: string[],
   order = {},
   offset = 0,
   limit = 100
-) => {
+): Promise<MDCol<MDManga>> => {
   return fetchJson<MDCol<MDManga>>(
     "manga",
     {
@@ -162,7 +163,7 @@ export const fetchCovers = (
   );
 };
 
-export const fetchCover = async (image: string) => {
+export const fetchCover = async (image: string): Promise<string> => {
   try {
     const response = await fetch(image, { cache: "force-cache" });
     if (!response.ok) {
@@ -177,10 +178,14 @@ export const fetchCover = async (image: string) => {
     return imageSrc;
   } catch (error) {
     console.error("Error fetching image:", error);
+    throw error;
   }
 };
 
-const fetchLatestChapters = (offset = 0, limit = 100) => {
+const fetchLatestChapters = async (
+  offset = 0,
+  limit = 100
+): Promise<MDCol<MDChapter>> => {
   return fetchJson<MDCol<MDChapter>>(
     "manga",
     {
@@ -192,29 +197,34 @@ const fetchLatestChapters = (offset = 0, limit = 100) => {
   );
 };
 
-export const getLatestManga = async () => {
-  const latest = await fetchLatestChapters(0, 30);
-  const latestIds: any = latest?.data.map((k: any) => k.id);
-  const covers: any = await fetchCovers(latestIds, { updatedAt: "desc" });
+export const getLatestManga = async (): Promise<any[]> => {
+  try {
+    const latest = await fetchLatestChapters(0, 30);
+    const latestIds = latest?.data.map((k: any) => k.id) || [];
+    const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
 
-  const returnedManga: any = await Promise.all(
-    covers?.data?.map(async (k: any) => ({
-      id: k?.id,
-      updatedAt: k?.attributes?.updatedAt,
-      cover: await fetchCover(
-        `https://uploads.mangadex.org/covers/${k?.id}/${
-          k?.relationships?.find((t: any) => t?.type === "cover_art")
-            ?.attributes?.fileName
-        }.256.jpg`
-      ),
-      title: k?.attributes?.title,
-    }))
-  );
+    const returnedManga = await Promise.all(
+      covers?.data?.map(async (k: any) => ({
+        id: k?.id,
+        updatedAt: k?.attributes?.updatedAt,
+        cover: await fetchCover(
+          `https://uploads.mangadex.org/covers/${k?.id}/${
+            k?.relationships?.find((t: any) => t?.type === "cover_art")
+              ?.attributes?.fileName
+          }.256.jpg`
+        ),
+        title: k?.attributes?.title?.en || k?.attributes?.title?.["ja-ro"],
+      })) || []
+    );
 
-  return returnedManga;
+    return returnedManga;
+  } catch (error) {
+    console.error("Error in getLatestManga:", error);
+    throw error;
+  }
 };
 
-export const Carousel = async () => {
+export const Carousel = async (): Promise<any[]> => {
   try {
     const randomOffset = Math.floor(Math.random() * 200);
     const req = await fetchJson<MDCol<MDChapter>>(
@@ -227,13 +237,12 @@ export const Carousel = async () => {
       { cache: "no-store" }
     );
 
-    const mangaIds: any = req?.data?.map((m) => m?.id);
-    const manga = await fetchCovers(mangaIds);
+    const mangaIds: any = req?.data?.map((m) => m?.id) || [];
+    const manga: any = (await fetchCovers(mangaIds)) || [];
 
     const getRandomManga = (mangaData: MDCol, count: number) => {
-      const shuffledManga: any = mangaData?.data?.sort(
-        () => Math.random() - 0.5
-      );
+      const shuffledManga =
+        mangaData?.data?.sort(() => Math.random() - 0.5) || [];
       return shuffledManga.slice(0, count);
     };
 
@@ -249,7 +258,7 @@ export const Carousel = async () => {
               .attributes.fileName
           }.256.jpg`
         ),
-        title: manga.attributes.title,
+        title: manga.attributes.title.en || manga?.attributes?.title?.["ja-ro"],
         contentRating: manga.attributes.contentRating,
         publicationDemographic: manga.attributes.publicationDemographic,
         status: manga.attributes.status,
@@ -260,67 +269,60 @@ export const Carousel = async () => {
 
     return returnedManga;
   } catch (error) {
-    console.error("Error fetching carousel:", error);
+    console.error("Error in Carousel:", error);
     throw error;
   }
 };
 
-export const fetchTopListings = async () => {
+export const fetchTopListings = async (): Promise<{
+  popular: any[];
+  topRated: any[];
+  topRead: any[];
+}> => {
   try {
-    const [reqTopFollowed, reqTopRated, reqHot, reqTopRead] = await Promise.all(
-      [
-        fetchJson<MDCol<MDChapter>>(
-          "manga",
-          { limit: 10, order: { followedCount: "desc" } },
-          { next: { revalidate: 3600 } }
-        ),
-        fetchJson<MDCol<MDChapter>>(
-          "manga",
-          { limit: 10, order: { rating: "desc" } },
-          { next: { revalidate: 3600 } }
-        ),
-        fetchJson<MDCol<MDChapter>>(
-          "manga",
-          {
-            limit: 10,
-            order: { updatedAt: "desc", followedCount: "desc" },
+    const [reqTopFollowed, reqTopRated, reqTopRead] = await Promise.all([
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { followedCount: "desc" } },
+        { next: { revalidate: 3600 } }
+      ),
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        { limit: 10, order: { rating: "desc" } },
+        { next: { revalidate: 3600 } }
+      ),
+      fetchJson<MDCol<MDChapter>>(
+        "manga",
+        {
+          limit: 10,
+          order: {
+            updatedAt: "desc",
+            rating: "desc",
+            followedCount: "desc",
           },
-          { next: { revalidate: 60 } }
-        ),
-        fetchJson<MDCol<MDChapter>>(
-          "manga",
-          {
-            limit: 10,
-            order: {
-              updatedAt: "desc",
-              rating: "desc",
-              followedCount: "desc",
-            },
-          },
-          { next: { revalidate: 60 } }
-        ),
-      ]
-    );
+        },
+        { next: { revalidate: 60 } }
+      ),
+    ]);
 
-    const extractData = (data: any) =>
+    const extractData = (data: any): any[] =>
       data?.map((manga: any) => ({
         id: manga.id,
-        title: manga.attributes.title,
-      }));
+        title: manga.attributes.title.en || manga?.attributes?.title?.["ja-ro"],
+      })) || [];
 
     const popular = extractData(reqTopFollowed?.data);
     const topRated = extractData(reqTopRated?.data);
-    const hot = extractData(reqHot?.data);
     const topRead = extractData(reqTopRead?.data);
 
-    return { popular, topRated, hot, topRead };
+    return { popular, topRated, topRead };
   } catch (error) {
-    console.error("Error fetching top listings:", error);
+    console.error("Error in fetchTopListings:", error);
     throw error;
   }
 };
 
-export const getFeaturedManga = async () => {
+export const getFeaturedManga = async (): Promise<any> => {
   try {
     const randomOffset = Math.floor(Math.random() * 100);
     const req = await fetchJson<MDCol<MDChapter>>(
@@ -335,26 +337,28 @@ export const getFeaturedManga = async () => {
 
     const randomIndex = Math.floor(Math.random() * 20);
     const mangaId: any = req?.data[randomIndex]?.id;
-    const manga: any = await fetchCovers([mangaId]);
+    const manga: any = (await fetchCovers([mangaId])) || [];
 
-    const returnedManga: any = await Promise.all(
-      manga?.data?.map(async (manga: any) => ({
-        id: manga.id,
-        tags: manga.attributes.tags,
-        cover: await fetchCover(
-          `https://uploads.mangadex.org/covers/${manga.id}/${
-            manga.relationships.find((t: any) => t.type === "cover_art")
-              .attributes.fileName
-          }.256.jpg`
-        ),
-        title: manga.attributes.title,
-        contentRating: manga.attributes.contentRating,
-        publicationDemographic: manga.attributes.publicationDemographic,
-        status: manga.attributes.status,
-        description: manga.attributes.description.en,
-        type: manga.type,
-      }))
-    );
+    const returnedManga =
+      (await Promise.all(
+        manga?.data?.map(async (manga: any) => ({
+          id: manga.id,
+          tags: manga.attributes.tags,
+          cover: await fetchCover(
+            `https://uploads.mangadex.org/covers/${manga.id}/${
+              manga.relationships.find((t: any) => t.type === "cover_art")
+                .attributes.fileName
+            }.256.jpg`
+          ),
+          title:
+            manga.attributes.title.en || manga?.attributes?.title?.["ja-ro"],
+          contentRating: manga.attributes.contentRating,
+          publicationDemographic: manga.attributes.publicationDemographic,
+          status: manga.attributes.status,
+          description: manga.attributes.description.en,
+          type: manga.type,
+        }))
+      )) || [];
 
     const featuredWithDate = {
       manga: returnedManga[0],
@@ -363,13 +367,13 @@ export const getFeaturedManga = async () => {
 
     return featuredWithDate;
   } catch (error) {
-    console.error("Error fetching featured manga:", error);
+    console.error("Error in getFeaturedManga:", error);
     throw error;
   }
 };
 
-export const getMangaInfo = async (id: string) => {
-  const manga: any = await fetchCovers([id]);
+export const getMangaInfo = async (id: string): Promise<any> => {
+  const manga: any = (await fetchCovers([id])) || [];
 
   const returnedManga = await Promise.all(
     manga?.data?.map(async (manga: any) => ({
@@ -381,14 +385,16 @@ export const getMangaInfo = async (id: string) => {
             .attributes.fileName
         }.256.jpg`
       ),
-      title: manga.attributes.title,
+      title: manga.attributes.title.en || manga?.attributes?.title?.["ja-ro"],
+      author: manga?.relationships.filter((t: any) => t.type === "author")[0],
+      artist: manga?.relationships.filter((t: any) => t.type === "artist")[0],
       contentRating: manga.attributes.contentRating,
       publicationDemographic: manga.attributes.publicationDemographic,
       status: manga.attributes.status,
       updatedAt: manga.attributes.updatedAt,
       description: manga.attributes.description.en,
       type: manga.type,
-    }))
+    })) || []
   );
 
   const response = await fetchJson(

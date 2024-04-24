@@ -13,18 +13,4 @@ export default {
     minimumCacheTTL: 86400,
     formats: ["image/avif", "image/webp"],
   },
-  compress: false,
-  async headers() {
-    return [
-      {
-        source: "/api/image",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "image/jpeg",
-          },
-        ],
-      },
-    ];
-  },
 };

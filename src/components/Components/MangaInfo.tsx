@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import Description from "./Description";
@@ -17,22 +17,28 @@ const contentTypeBg: any = {
 };
 
 const MangaInfo = ({ manga }: any) => {
-  console.log(manga);
   const { mangaInfo, mangaStats } = manga;
+  console.log(manga);
+
+  useEffect(() => {
+    // Change Title
+    document.title = `MangaSensei - ${mangaInfo?.title}`;
+  }, []);
+
   return (
     manga && (
       <section className="dark:bg-[#fff1] p-5 flex flex-col gap-5 bg-[#0001] w-full rounded-md">
-        <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-          <div className="mx-auto md:mx-0 w-2/3 md:w-48 flex flex-col gap-1 md:gap-2">
+        <div className="flex flex-col gap-5 md:gap-3 md:flex-row">
+          <div className="mx-auto md:mx-0 w-full min-w-52 md:w-52 flex flex-col gap-1 md:gap-2">
             <Image
               src={mangaInfo?.cover}
               height={500}
               width={500}
               alt={mangaInfo?.title}
-              className="rounded aspect-[1/1.4] object-cover w-full"
+              className="rounded aspect-[1/1.4] object-cover w-1/2 md:w-full mx-auto"
             />
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-1">
-              <Button className="bg-blue-600 col-span-2 md:col-span-1 w-full p-0 mb-1 hover:bg-blue-500 text-white text-sm shadow-none tracking-wider rounded-sm uppercase">
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-1 w-4/5 md:w-full mx-auto">
+              <Button className="bg-blue-600 col-span-2 md:col-span-1 w-full p-0 my-1 hover:bg-blue-500 text-white text-sm shadow-none tracking-wider rounded-sm uppercase">
                 <BookmarkIcon />
                 Bookmark
               </Button>
@@ -60,7 +66,7 @@ const MangaInfo = ({ manga }: any) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             <div className="flex gap-1 uppercase font-semibold text-white">
               <p
                 className={`w-min rounded bg-[#fff5] px-1 py-[2px] text-[.6rem]`}
@@ -90,11 +96,32 @@ const MangaInfo = ({ manga }: any) => {
               </p>
             </div>
             <h1 className="text-xl md:text-2xl font-bold">
-              {mangaInfo?.title.en || mangaInfo?.title["ja-ro"]}
+              {mangaInfo?.title}
             </h1>
+            <Description description={mangaInfo?.description} />
+            <div className="w-full grid grid-cols-2 gap-3">
+              <p className="font-medium">
+                Author<br />
+                <span className="opacity-70 font-normal">
+                  {mangaInfo?.author?.attributes?.name}
+                </span>
+              </p>
+              <p className="font-medium">
+                Artist<br />
+                <span className="opacity-70 font-normal">
+                  {mangaInfo?.artist?.attributes?.name}
+                </span>
+              </p>
+              <p className="font-medium">
+                Chapters<br />
+                <span className="opacity-70 font-normal">
+                  {/* Chapters */}
+                  110
+                </span>
+              </p>
+            </div>
           </div>
         </div>
-        <Description description={mangaInfo?.description} />
       </section>
     )
   );

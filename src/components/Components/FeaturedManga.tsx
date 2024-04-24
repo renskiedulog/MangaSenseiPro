@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import FeaturedLoader from "../Skeletons/FeaturedLoader";
-import { fetchCover } from "@/utils/requests";
 
 const contentTypeBg: any = {
   safe: "bg-[green]",
@@ -114,7 +113,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
           </p>
         </div>
         <p className="text-white text-lg md:text-xl text-ellipsis line-clamp-3 font-semibold !leading-tight pt-1">
-          {featuredManga?.title?.en || featuredManga?.title["ja-ro"]}
+          {featuredManga?.title}
         </p>
         <div className="description group-hover:max-h-[300px]">
           <p className="text-sm line-clamp-[8] text-white text-ellipsis">
