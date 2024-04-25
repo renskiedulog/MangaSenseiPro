@@ -2,7 +2,6 @@
 import Link from "next/link";
 
 const Chapters = ({ mangaId ,chapters }: any) => {
-  console.log(chapters)
   if (chapters?.length === 0) {
     return (
       <div className="mx-auto my-2 text-center text-lg font-bold">
@@ -18,18 +17,18 @@ const Chapters = ({ mangaId ,chapters }: any) => {
         <div className="color-text flex items-center gap-2 border-b border-[#fff2] px-3 py-2 text-xl font-bold">
           <Link
             href={`/manga/${mangaId}/${chapters[chapters.length - 1]?.id}`}
-            className="flex w-full flex-col items-center justify-center rounded bg-blue-600 py-2 text-white hover:scale-[1.01] hover:brightness-90"
+            className="flex w-full flex-col items-center justify-center md:text-base text-sm rounded bg-blue-600 py-2 text-white hover:scale-[1.01] hover:brightness-90"
           >
-            <p className="text-base font-normal">First Chapter</p>
+            <p className="font-normal">First Chapter</p>
             <span>
               Chapter {chapters[chapters.length - 1]?.chapter}
             </span>
           </Link>
           <Link
             href={`/manga/${mangaId}/${chapters[chapters.length - 1]?.id}`}
-            className="flex w-full flex-col items-center justify-center rounded bg-blue-600 py-2 text-white hover:scale-[1.01] hover:brightness-90"
+            className="flex w-full flex-col items-center md:text-base text-sm justify-center rounded bg-blue-600 py-2 text-white hover:scale-[1.01] hover:brightness-90"
           >
-            <p className="text-base font-normal">Last Chapter</p>
+            <p className="font-normal">Last Chapter</p>
             <span>Chapter {chapters[0]?.chapter}</span>
           </Link>
         </div>
@@ -40,7 +39,7 @@ const Chapters = ({ mangaId ,chapters }: any) => {
               href={`/manga/${mangaId}/${chapter.id}`}
               className="group my-1 w-full rounded border border-[#fff2] px-3 py-2 hover:bg-[#fff1]"
             >
-              <div className="group-hover:text-blue-500">
+              <div className="group-hover:text-blue-500 md:text-base text-sm">
                 Chapter {chapter?.chapter}
                 {chapter?.title
                   ? ` - ${chapter?.title}`
@@ -57,7 +56,7 @@ const Chapters = ({ mangaId ,chapters }: any) => {
                 <div className="w-max">
                   Pages: {chapter?.pages || "-"}
                 </div>
-                <div className="w-max ml-auto">Scanlated By: {chapter?.scanlationGroup}</div>
+                {chapter?.scanlationGroup && <div className="w-max ml-auto">Scanlated By: {chapter?.scanlationGroup}</div>}
               </div>
             </Link>
           ))}

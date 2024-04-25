@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import FeaturedLoader from "../Skeletons/FeaturedLoader";
+import Link from "next/link";
 
 const contentTypeBg: any = {
   safe: "bg-[green]",
@@ -126,12 +127,14 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
             >
               <BookmarkIcon />
             </Button>
-            <Button
-              className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
-              size="sm"
-            >
-              Read
-            </Button>
+            <Link href={`/${featuredManga?.id}`}>
+              <Button
+                className="min-w-32 bg-[#fff3] text-white hover:bg-blue-500"
+                size="sm"
+              >
+                Read
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
