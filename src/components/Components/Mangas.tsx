@@ -12,7 +12,7 @@ const Mangas = async ({ mangas }: { mangas: any }) => {
           key={idx}
           href={`/${manga?.id}`}
           className="w-full text-center group leading-none"
-          title={manga?.title?.en}
+          title={manga?.title}
         >
           <Image
             src={manga?.cover}

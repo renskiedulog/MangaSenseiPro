@@ -91,6 +91,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             alt="featured-image-alt"
             className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
             quality={20}
+            priority
           />
           {/* Front */}
           <Image

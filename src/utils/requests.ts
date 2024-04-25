@@ -405,3 +405,71 @@ export const getMangaInfo = async (id: string): Promise<any> => {
 
   return { mangaInfo: returnedManga[0], mangaStats: response?.statistics[id] };
 };
+
+export const getChapters = async (mangaId: string) => {
+  let page = 1;
+  const allChapters = [];
+
+  while (true) {
+    const response = await fetchJson(
+      `/manga/${mangaId}/feed`,
+      {
+        translatedLanguage: ["en"],
+        limit: 500,
+        offset: (page - 1) * 500,
+        order: { chapter: "desc" },
+      },
+      { next: { revalidate: 60 } }
+    );
+
+    const mangaChapters = response?.data;
+    const newChapters: any = [];
+    const seenChapterNumbers = new Set();
+
+    mangaChapters?.map((chapter: any) => {
+      const chapterNumber = parseInt(chapter.attributes.chapter);
+      const pages = chapter.attributes.pages;
+
+      if (pages > 0 && !seenChapterNumbers.has(chapterNumber)) {
+        newChapters.push(chapter);
+        seenChapterNumbers.add(chapterNumber);
+      }
+    });
+
+    if (mangaChapters && mangaChapters.length > 0) {
+      allChapters.push(...newChapters);
+      page++;
+    } else {
+      break; // No more chapters to fetch
+    }
+  }
+
+  const extractedChapters = await Promise.all(
+    allChapters?.map(async (chapter: any) => ({
+      id: chapter?.id,
+      title: chapter?.attributes?.title,
+      chapter: chapter?.attributes?.chapter,
+      pages: chapter?.attributes?.pages,
+      createdAt: chapter?.attributes?.createdAt,
+      scanlationGroup: chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id ? await getScanlation(chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id) : null,
+    })) || []
+  );
+
+  return extractedChapters;
+};
+
+export const getChapterImages = async (chapterId: string) => {
+  const req = await fetchJson(
+    `/at-home/server/${chapterId}`,
+    {},
+    { cache: "force-cache" }
+  );
+
+  return req;
+};
+
+const getScanlation = async (id: string) => {
+  const req = await fetchJson(`group/${id}`, {}, { cache: "force-cache"});
+
+  return req?.data?.attributes?.name;
+}

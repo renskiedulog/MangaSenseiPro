@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { BookmarkIcon } from "lucide-react";
 import Description from "./Description";
 import { formatDate } from "@/utils/utils";
+import Link from "next/link";
 
 const contentTypeBg: any = {
   safe: "bg-[green]",
@@ -16,9 +17,8 @@ const contentTypeBg: any = {
   cancelled: "bg-[red]",
 };
 
-const MangaInfo = ({ manga }: any) => {
+const MangaInfo = ({ manga, chaptersLength }: any) => {
   const { mangaInfo, mangaStats } = manga;
-  console.log(manga);
 
   useEffect(() => {
     // Change Title
@@ -35,7 +35,7 @@ const MangaInfo = ({ manga }: any) => {
               height={500}
               width={500}
               alt={mangaInfo?.title}
-              className="rounded aspect-[1/1.4] object-cover w-1/2 md:w-full mx-auto"
+              className="rounded aspect-[1/1.4] object-cover w-2/3 md:w-full mx-auto"
             />
             <div className="grid grid-cols-2 md:grid-cols-1 gap-1 w-4/5 md:w-full mx-auto">
               <Button className="bg-blue-600 col-span-2 md:col-span-1 w-full p-0 my-1 hover:bg-blue-500 text-white text-sm shadow-none tracking-wider rounded-sm uppercase">
@@ -95,30 +95,47 @@ const MangaInfo = ({ manga }: any) => {
                 {mangaInfo?.status?.toUpperCase()}
               </p>
             </div>
-            <h1 className="text-xl md:text-2xl font-bold">
+            <h1 className="text-2xl md:text-[28px] pt-1 font-bold">
               {mangaInfo?.title}
             </h1>
             <Description description={mangaInfo?.description} />
             <div className="w-full grid grid-cols-2 gap-3">
               <p className="font-medium">
-                Author<br />
+                Author
+                <br />
                 <span className="opacity-70 font-normal">
                   {mangaInfo?.author?.attributes?.name}
                 </span>
               </p>
               <p className="font-medium">
-                Artist<br />
+                Artist
+                <br />
                 <span className="opacity-70 font-normal">
                   {mangaInfo?.artist?.attributes?.name}
                 </span>
               </p>
               <p className="font-medium">
-                Chapters<br />
+                Chapters
+                <br />
                 <span className="opacity-70 font-normal">
-                  {/* Chapters */}
-                  110
+                  {chaptersLength}
                 </span>
               </p>
+            </div>
+            {/* Genres */}
+            <div className="flex flex-col gap-1 mt-2">
+              <p className="font-medium">Genres</p>
+              <div className="flex flex-wrap gap-1.5 items-center">
+                {mangaInfo?.tags?.map((tag: any, idx: number) => (
+                  <Link
+                    key={idx}
+                    href={`/filter/${tag?.id}`}
+                    className="bg-accent min-w-16 px-2 text-base font-medium hover:text-blue-500 hover:opacity-100 text-white text-center py-1 rounded"
+                  >
+                    {tag?.attributes?.name?.en}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
