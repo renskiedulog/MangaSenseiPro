@@ -94,7 +94,7 @@ type OutputModel = {
   chapter: MDChapter;
 };
 
-const fetchJson = async <T = any>(
+export const fetchJson = async <T = any>(
   url: string,
   params?: QueryParam,
   options?: Object
@@ -451,7 +451,15 @@ export const getChapters = async (mangaId: string) => {
       chapter: chapter?.attributes?.chapter,
       pages: chapter?.attributes?.pages,
       createdAt: chapter?.attributes?.createdAt,
-      scanlationGroup: chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id ? await getScanlation(chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id) : [],
+      scanlationGroup: chapter?.relationships?.filter(
+        (t: any) => t.type === "scanlation_group"
+      )[0]?.id
+        ? await getScanlation(
+            chapter?.relationships?.filter(
+              (t: any) => t.type === "scanlation_group"
+            )[0]?.id
+          )
+        : [],
     })) || []
   );
 
@@ -469,7 +477,12 @@ export const getChapterImages = async (chapterId: string) => {
 };
 
 const getScanlation = async (id: string) => {
-  const req = await fetchJson(`group/${id}`, {}, { cache: "force-cache"});
+  const req = await fetchJson(`group/${id}`, {}, { cache: "force-cache" });
 
   return req?.data?.attributes?.name;
-}
+};
+
+export const getRandomManga = async () => {
+  const req: any = await fetchJson("manga/random", {}, { cache: "no-store" });
+  return req?.data?.id;
+};
