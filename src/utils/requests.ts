@@ -199,7 +199,7 @@ const fetchLatestChapters = async (
 
 export const getLatestManga = async (): Promise<any[]> => {
   try {
-    const latest = await fetchLatestChapters(0, 30);
+    const latest = await fetchLatestChapters(0, 60);
     const latestIds = latest?.data.map((k: any) => k.id) || [];
     const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
 
@@ -451,7 +451,7 @@ export const getChapters = async (mangaId: string) => {
       chapter: chapter?.attributes?.chapter,
       pages: chapter?.attributes?.pages,
       createdAt: chapter?.attributes?.createdAt,
-      scanlationGroup: chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id ? await getScanlation(chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id) : null,
+      scanlationGroup: chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id ? await getScanlation(chapter?.relationships?.filter((t: any) => t.type === "scanlation_group")[0]?.id) : [],
     })) || []
   );
 

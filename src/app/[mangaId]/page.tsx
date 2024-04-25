@@ -13,7 +13,7 @@ const page = async ({ params }: any) => {
   return (
     <main className="flex lg:flex-row flex-col py-2 gap-2 md:mx-5 mx-1 justify-center">
       <div className="w-full lg:w-9/12">
-        <MangaInfo manga={manga} chaptersLength={chapters?.length - 1}/>
+        <MangaInfo manga={manga} chaptersLength={chapters?.length === 0 ? 0 : chapters?.length - 1}/>
         <Chapters chapters={chapters} mangaId={params?.mangaId} />
       </div>
       <div className="w-full !relative md:mt-0 lg:w-3/12">

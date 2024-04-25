@@ -40,12 +40,12 @@ const Chapters = ({ mangaId ,chapters }: any) => {
               className="group my-1 w-full rounded border border-[#fff2] px-3 py-2 hover:bg-[#fff1]"
             >
               <div className="group-hover:text-blue-500 md:text-base text-sm">
-                Chapter {chapter?.chapter}
+                Chapter {chapter?.chapter ? chapter?.chapter : 0}
                 {chapter?.title
                   ? ` - ${chapter?.title}`
                   : ""}
               </div>
-              <div className="flex items-center text-xs gap-2 opacity-50">
+              <div className="flex items-center flex-wrap text-xs gap-x-2 opacity-50">
                 <div className="w-max">
                   {chapter?.createdAt
                     ? new Date(
@@ -56,7 +56,7 @@ const Chapters = ({ mangaId ,chapters }: any) => {
                 <div className="w-max">
                   Pages: {chapter?.pages || "-"}
                 </div>
-                {chapter?.scanlationGroup && <div className="w-max ml-auto">Scanlated By: {chapter?.scanlationGroup}</div>}
+                {chapter?.scanlationGroup && <div className="w-full">Scanlated By: {chapter?.scanlationGroup}</div>}
               </div>
             </Link>
           ))}
