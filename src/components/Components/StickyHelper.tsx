@@ -8,9 +8,7 @@ const StickyHelper = async () => {
   const featuredManga = await getFeaturedManga();
 
   return (
-    <div
-      className="static md:sticky top-0 md:top-16 md:mr-6 transition w-full"
-    >
+    <div className="static md:sticky top-0 md:top-16 md:mr-6 transition w-full">
       <FeaturedManga newFeatured={featuredManga} />
       {/* Filter And Random Helper */}
       <Card className="bg-[var(--card-background)] p-2 border-accent">
@@ -31,14 +29,16 @@ const StickyHelper = async () => {
           </div>
           <div className="text-center text-sm">
             <p>Randomize</p>
-            <Button
-              key="randomize-btn"
-              className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
-              size={"sm"}
-            >
-              <ShuffleIcon className="size-4 mr-1" />
-              Random
-            </Button>
+            <a href="/random">
+              <Button
+                key="randomize-btn"
+                className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+                size={"sm"}
+              >
+                <ShuffleIcon className="size-4 mr-1" />
+                Random
+              </Button>
+            </a>
           </div>
         </div>
       </Card>

@@ -89,8 +89,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             height={300}
             width={300}
             alt="featured-image-alt"
-            className="w-full absolute h-full object-cover z-0 featured-bg shadow-md"
-            quality={20}
+            className="w-full absolute h-[320px] object-cover z-0 featured-bg shadow-md"
             priority
           />
           {/* Front */}
@@ -98,7 +97,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             height={300}
             width={200}
             src={manga?.cover}
-            alt="alt"
+            alt={manga?.title || "manga"}
             quality={50}
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
           />

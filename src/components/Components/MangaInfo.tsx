@@ -34,7 +34,7 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
               src={mangaInfo?.cover}
               height={500}
               width={500}
-              alt={mangaInfo?.title}
+              alt={mangaInfo?.title || "manga"}
               className="rounded aspect-[1/1.4] object-cover w-2/3 md:w-full mx-auto"
             />
             <div className="grid grid-cols-2 md:grid-cols-1 gap-1 w-4/5 md:w-full mx-auto">
@@ -117,9 +117,7 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
               <p className="font-medium">
                 Chapters
                 <br />
-                <span className="opacity-70 font-normal">
-                  {chaptersLength}
-                </span>
+                <span className="opacity-70 font-normal">{chaptersLength}</span>
               </p>
             </div>
             {/* Genres */}

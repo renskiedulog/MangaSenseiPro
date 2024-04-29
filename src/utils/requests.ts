@@ -385,7 +385,10 @@ export const getMangaInfo = async (id: string): Promise<any> => {
             .attributes.fileName
         }.256.jpg`
       ),
-      title: manga.attributes.title.en || manga?.attributes?.title?.["ja-ro"],
+      title:
+        manga.attributes.title.en ||
+        manga?.attributes?.title["ja-ro"] ||
+        manga?.attributes?.title?.ja,
       author: manga?.relationships.filter((t: any) => t.type === "author")[0],
       artist: manga?.relationships.filter((t: any) => t.type === "artist")[0],
       contentRating: manga.attributes.contentRating,
