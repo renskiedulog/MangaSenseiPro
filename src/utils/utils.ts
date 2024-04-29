@@ -22,14 +22,12 @@ export function formatDate(inputDate: string) {
   let day = originalDate.getDate();
   let year = originalDate.getFullYear();
 
-  let ampm = hours >= 12 ? "PM" : "AM";
   hours = hours % 12;
   hours = hours ? hours : 12; // Handle midnight (0 hours)
 
   minutes = minutes < 10 ? "0" + minutes : minutes;
 
-  let formattedDate =
-    hours + ":" + minutes + " " + ampm + " " + month + " " + day + ", " + year;
+  let formattedDate = month + " " + day + ", " + year;
 
   return formattedDate;
 }

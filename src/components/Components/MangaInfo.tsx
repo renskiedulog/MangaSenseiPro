@@ -27,9 +27,9 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
 
   return (
     manga && (
-      <section className="dark:bg-[#fff1] p-5 flex flex-col gap-5 bg-[#0001] w-full rounded-md">
+      <section className="dark:bg-[#fff1] overflow-hidden p-5 flex flex-col gap-5 bg-[#0001] w-full rounded-md">
         <div className="flex flex-col gap-5 md:gap-3 md:flex-row">
-          <div className="mx-auto md:mx-0 w-full min-w-52 md:w-52 flex flex-col gap-1 md:gap-2">
+          <div className="mx-auto md:mx-0 w-full relative min-w-52 md:w-52 flex flex-col gap-1 md:gap-2">
             <Image
               src={mangaInfo?.cover}
               height={500}
@@ -59,7 +59,7 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
               {mangaInfo?.updatedAt && (
                 <div className="dark:bg-[#fff1] col-span-2 md:col-span-1 opacity-70 uppercase min-h-10 px-2 py-1 rounded flex items-center justify-between bg-[#0001]">
                   <p className="text-xs">Updated</p>
-                  <p className="text-right w-4/6 text-xs font-semibold">
+                  <p className="text-right w-3/6 text-xs font-semibold">
                     {formatDate(mangaInfo?.updatedAt)}
                   </p>
                 </div>

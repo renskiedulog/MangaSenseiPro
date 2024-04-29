@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getRandomManga } from './../../utils/requests';
+import { getRandomManga } from '../../utils/requests';
 
 const page = async () => {
   const randomManga = await getRandomManga();
