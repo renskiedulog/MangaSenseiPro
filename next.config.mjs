@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 export default {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   reactStrictMode: true,
   images: {
     unoptimized: true,

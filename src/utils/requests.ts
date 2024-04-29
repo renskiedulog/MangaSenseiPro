@@ -506,15 +506,11 @@ export const getSuggested = async (tags: any) => {
   }
 
   const res = await fetchJson("manga", { includedTags: ids, limit: 20 });
-  if (res?.data?.length < 6) {
-    mangas = res?.data;
-  } else {
-    for (let i = 0; i < 6; i++) {
-      let randIndex = Math.floor(Math.random() * res?.data?.length);
-      if (randIndex !== -1) {
-        mangas?.push(res?.data[randIndex]);
-        res?.data?.splice(randIndex, 1); // Remove the selected item from res.data
-      }
+  for (let i = 0; i <= res?.data?.length; i++) {
+    let randIndex = Math.floor(Math.random() * res?.data?.length);
+    if (randIndex !== -1 && mangas?.length < 6) {
+      mangas?.push(res?.data[randIndex]);
+      res?.data?.splice(randIndex, 1); // Remove the selected item from res.data
     }
   }
 
