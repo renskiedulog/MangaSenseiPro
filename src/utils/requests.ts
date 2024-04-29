@@ -375,7 +375,7 @@ export const getFeaturedManga = async (): Promise<any> => {
 export const getMangaInfo = async (id: string): Promise<any> => {
   const manga: any = (await fetchCovers([id])) || [];
 
-  const returnedManga = await Promise.all(
+  const returnedManga: any = await Promise.all(
     manga?.data?.map(async (manga: any) => ({
       id: manga.id,
       tags: manga.attributes.tags,
@@ -406,7 +406,13 @@ export const getMangaInfo = async (id: string): Promise<any> => {
     { cache: "force-cache" }
   );
 
-  return { mangaInfo: returnedManga[0], mangaStats: response?.statistics[id] };
+  const suggested = await getSuggested(manga?.data[0].attributes?.tags);
+
+  return {
+    mangaInfo: returnedManga[0],
+    mangaStats: response?.statistics[id],
+    suggested: suggested,
+  };
 };
 
 export const getChapters = async (mangaId: string) => {
@@ -488,4 +494,46 @@ const getScanlation = async (id: string) => {
 export const getRandomManga = async () => {
   const req: any = await fetchJson("manga/random", {}, { cache: "no-store" });
   return req?.data?.id;
+};
+
+export const getSuggested = async (tags: any) => {
+  const ids: any = [];
+  let mangas: any = [];
+
+  for (let i = 0; i <= 5; i++) {
+    let randIndex = Math.floor(Math.random() * tags?.length);
+    ids?.push(tags[randIndex].id);
+  }
+
+  const res = await fetchJson("manga", { includedTags: ids, limit: 20 });
+  if (res?.data?.length < 6) {
+    mangas = res?.data;
+  } else {
+    for (let i = 0; i < 6; i++) {
+      let randIndex = Math.floor(Math.random() * res?.data?.length);
+      if (randIndex !== -1) {
+        mangas?.push(res?.data[randIndex]);
+        res?.data?.splice(randIndex, 1); // Remove the selected item from res.data
+      }
+    }
+  }
+
+  const mangaIds = mangas?.map((k: any) => k.id) || [];
+  const mangaWithCover: any = (await fetchCovers(mangaIds)) || [];
+
+  const returnedManga = await Promise.all(
+    mangaWithCover?.data?.map(async (k: any) => ({
+      id: k?.id,
+      updatedAt: k?.attributes?.updatedAt,
+      cover: await fetchCover(
+        `https://uploads.mangadex.org/covers/${k?.id}/${
+          k?.relationships?.find((t: any) => t?.type === "cover_art")
+            ?.attributes?.fileName
+        }.256.jpg`
+      ),
+      title: k?.attributes?.title?.en || k?.attributes?.title?.["ja-ro"],
+    })) || []
+  );
+
+  return returnedManga;
 };

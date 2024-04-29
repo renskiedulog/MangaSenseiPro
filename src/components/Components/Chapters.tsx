@@ -4,7 +4,7 @@ import Link from "next/link";
 const Chapters = ({ mangaId, chapters }: any) => {
   if (chapters?.length === 0) {
     return (
-      <div className="mx-auto my-2 text-center text-lg font-bold">
+      <div className="mx-auto my-2 dark:bg-[#fff1] min-h-[30vh] rounded flex justify-center items-center bg-[#0001] text-center text-lg font-bold">
         No Chapters Found.
       </div>
     );

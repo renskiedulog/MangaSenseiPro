@@ -18,6 +18,7 @@ const contentTypeBg: any = {
 };
 
 const MangaInfo = ({ manga, chaptersLength }: any) => {
+  console.log(manga?.suggested);
   const { mangaInfo, mangaStats } = manga;
 
   useEffect(() => {
