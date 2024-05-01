@@ -13,6 +13,7 @@ const ImageLoader = ({ images }: any) => {
               alt={`image-${idx}`}
               width={500}
               height={500}
+              key={idx}
               className="!w-full !h-full"
             />
           ) : (
