@@ -70,7 +70,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
     };
   }, [featuredManga]);
 
-  return featuredManga ? (
+  return featuredManga !== null ? (
     <Card className="relative my-2 border-accent bg-[var(--card-background)] overflow-hidden rounded-md w-full group">
       <Image
         alt="featured-cover"

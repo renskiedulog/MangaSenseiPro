@@ -1,3 +1,4 @@
+import { fetchCover } from "./requests";
 import axios from "axios";
 
 type Primitives = string | number | boolean | Date;
@@ -213,7 +214,10 @@ export const getLatestManga = async (): Promise<any[]> => {
               ?.attributes?.fileName
           }.256.jpg`
         ),
-        title: k?.attributes?.title?.en || k?.attributes?.title?.["ja-ro"],
+        title:
+          k?.attributes?.title?.en ||
+          k?.attributes?.title?.["ja-ro"] ||
+          k?.attributes?.title?.ja,
       })) || []
     );
 
@@ -532,4 +536,14 @@ export const getSuggested = async (tags: any) => {
   );
 
   return returnedManga;
+};
+
+export const getMangaTitle = async (id: string) => {
+  const manga = await fetchCovers([id]);
+  const title =
+    manga?.data[0]?.attributes?.title.en ||
+    manga?.data[0]?.attributes?.title["ja-ro"] ||
+    manga?.data[0]?.attributes?.title?.ja;
+
+  return title;
 };
