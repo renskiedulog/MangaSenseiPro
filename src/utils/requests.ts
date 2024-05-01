@@ -1,6 +1,3 @@
-import { fetchCover } from "./requests";
-import axios from "axios";
-
 type Primitives = string | number | boolean | Date;
 type KeyValue<T = string> = { [key: string]: T };
 type QueryParam = {
@@ -164,7 +161,7 @@ export const fetchCovers = async (
   );
 };
 
-const fetchCover = async (image: string): Promise<string> => {
+export const fetchCover = async (image: string): Promise<string> => {
   try {
     const response = await fetch(image, { cache: "force-cache" });
     if (!response.ok) {
