@@ -11,7 +11,7 @@ const page = async ({ params }: any) => {
   "use server";
   const popular = await fetchTopListings();
   const chapters = await getChapters(params?.mangaId);
-  const manga = (await getMangaInfo(params.mangaId)) || [];
+  const manga = await getMangaInfo(params.mangaId);
 
   return (
     <main className="flex lg:flex-row flex-col py-2 gap-2 md:mx-5 mx-1 justify-center">

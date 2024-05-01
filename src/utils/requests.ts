@@ -164,7 +164,7 @@ export const fetchCovers = async (
   );
 };
 
-export const fetchCover = async (image: string): Promise<string> => {
+const fetchCover = async (image: string): Promise<string> => {
   try {
     const response = await fetch(image, { cache: "force-cache" });
     if (!response.ok) {
@@ -201,7 +201,7 @@ const fetchLatestChapters = async (
 export const getLatestManga = async (): Promise<any[]> => {
   try {
     const latest = await fetchLatestChapters(0, 60);
-    const latestIds = latest?.data.map((k: any) => k.id) || [];
+    const latestIds: any = latest?.data.map((k: any) => k.id);
     const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
 
     const returnedManga = await Promise.all(
@@ -241,12 +241,13 @@ export const Carousel = async (): Promise<any[]> => {
       { cache: "no-store" }
     );
 
-    const mangaIds: any = req?.data?.map((m) => m?.id) || [];
-    const manga: any = (await fetchCovers(mangaIds)) || [];
+    const mangaIds: any = req?.data?.map((m) => m?.id);
+    const manga: any = await fetchCovers(mangaIds);
 
     const getRandomManga = (mangaData: MDCol, count: number) => {
-      const shuffledManga =
-        mangaData?.data?.sort(() => Math.random() - 0.5) || [];
+      const shuffledManga: any = mangaData?.data?.sort(
+        () => Math.random() - 0.5
+      );
       return shuffledManga.slice(0, count);
     };
 
@@ -341,7 +342,7 @@ export const getFeaturedManga = async (): Promise<any> => {
 
     const randomIndex = Math.floor(Math.random() * 20);
     const mangaId: any = req?.data[randomIndex]?.id;
-    const manga: any = (await fetchCovers([mangaId])) || [];
+    const manga: any = await fetchCovers([mangaId]);
 
     const returnedManga =
       (await Promise.all(
@@ -377,7 +378,7 @@ export const getFeaturedManga = async (): Promise<any> => {
 };
 
 export const getMangaInfo = async (id: string): Promise<any> => {
-  const manga: any = (await fetchCovers([id])) || [];
+  const manga: any = await fetchCovers([id]);
 
   const returnedManga: any = await Promise.all(
     manga?.data?.map(async (manga: any) => ({
@@ -479,16 +480,6 @@ export const getChapters = async (mangaId: string) => {
   return extractedChapters;
 };
 
-export const getChapterImages = async (chapterId: string) => {
-  const req = await fetchJson(
-    `/at-home/server/${chapterId}`,
-    {},
-    { cache: "force-cache" }
-  );
-
-  return req;
-};
-
 const getScanlation = async (id: string) => {
   const req = await fetchJson(`group/${id}`, {}, { cache: "force-cache" });
 
@@ -546,4 +537,30 @@ export const getMangaTitle = async (id: string) => {
     manga?.data[0]?.attributes?.title?.ja;
 
   return title;
+};
+
+export const getChapterImages = async (chapterId: string) => {
+  try {
+    const req = await fetchJson(`at-home/server/${chapterId}`);
+    return req;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const generateChapterImages = async (images: string[], hash: string) => {
+  const generatedImages = await Promise.all(
+    images.map(async (image: string) => {
+      try {
+        return await fetchCover(
+          `https://uploads.mangadex.org/data-saver/${hash}/${image}`
+        );
+      } catch (error) {
+        return null;
+      }
+    })
+  );
+
+  return generatedImages;
 };
