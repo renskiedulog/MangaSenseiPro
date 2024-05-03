@@ -6,8 +6,10 @@ import StickyHelper from "@/components/Components/StickyHelper";
 
 export default async function Home() {
   "use server";
-  const carouselItems = await Carousel();
-  const popular = await fetchTopListings();
+  const [carouselItems, popular] = await Promise.all([
+    await Carousel(),
+    await fetchTopListings(),
+  ]);
 
   return (
     <main className="flex lg:flex-row flex-col py-2 gap-2 md:mx-5 mx-1 justify-center">

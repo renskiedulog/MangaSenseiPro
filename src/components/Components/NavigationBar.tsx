@@ -21,6 +21,7 @@ import {
 } from "../ui/tooltip";
 import SearchBar from "./SearchBar";
 import { Permanent_Marker } from "next/font/google";
+import { usePathname } from "next/navigation";
 
 const font = Permanent_Marker({
   weight: ["400"],
@@ -28,8 +29,15 @@ const font = Permanent_Marker({
 });
 
 const NavigationBar = () => {
+  const pathname = usePathname();
   return (
-    <NavigationMenu className="fixed max-w-screen-2xl top-0 z-50 w-full justify-between border-b border-border bg-background left-1/2 -translate-x-1/2 h-[3.5rem] md:px-10 px-5">
+    <NavigationMenu
+      className={`max-w-screen-2xl top-0 z-50 w-full justify-between border-b border-border bg-background left-1/2 -translate-x-1/2 h-[3.5rem] md:px-10 px-5 ${
+        pathname === "/" || pathname.split("/")?.length === 2
+          ? "fixed"
+          : "absolute"
+      }`}
+    >
       <NavigationMenuList>
         <Link href="/" className="font-bold text-lg flex items-center gap-2">
           <p

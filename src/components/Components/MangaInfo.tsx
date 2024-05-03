@@ -22,7 +22,7 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
 
   useEffect(() => {
     // Change Title
-    document.title = `MangaSensei - ${mangaInfo?.title}`;
+    document.title = `${mangaInfo?.title} | MangaSensei`;
   }, []);
 
   return (

@@ -22,7 +22,7 @@ const Description = ({ description }: any) => {
       <div
         className={`${
           toggle ? "" : "line-clamp-6"
-        } !text-[15px] opacity-80 md:text-base`}
+        } !text-[15px] opacity-80 md:text-base break-all`}
         ref={contentRef}
       >
         {description}

@@ -1,8 +1,6 @@
-"use client";
 import Image from "next/image";
-import React from "react";
 
-const ImageLoader = ({ images }: any) => {
+const ImageLoader = async ({ images }: any) => {
   return (
     <>
       {images !== null &&
@@ -14,7 +12,8 @@ const ImageLoader = ({ images }: any) => {
               width={500}
               height={500}
               key={idx}
-              className="!w-full !h-full"
+              className="!w-full !h-full object-cover"
+              priority
             />
           ) : (
             ""

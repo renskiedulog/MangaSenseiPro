@@ -13,8 +13,8 @@ const fontSans = FontSans({
 });
 
 export const metadata = {
-  title: "MangaSensei"
-}
+  title: "MangaSensei",
+};
 
 export default function RootLayout({
   children,
