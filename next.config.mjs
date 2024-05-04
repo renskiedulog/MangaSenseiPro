@@ -3,7 +3,7 @@ export default {
   typescript: {
     ignoreBuildErrors: true,
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
     unoptimized: true,
     disableStaticImages: true,

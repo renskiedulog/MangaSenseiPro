@@ -92,48 +92,44 @@ type OutputModel = {
   chapter: MDChapter;
 };
 
-export const fetchJson = async <T = any>(
-  url: string,
-  params?: QueryParam,
-  options?: Object
-): Promise<T> => {
-  const serializeParameters = (params?: QueryParam): string => {
-    if (!params) return "";
+const baseUrl = "https://api.mangadex.org/";
 
-    const paramStr = Object.entries(params)
-      .map(([key, value]) => {
-        if (Array.isArray(value)) {
-          return value.map((val) => `${key}[]=${val}`).join("&");
-        } else if (typeof value === "object") {
-          return Object.entries(value)
-            .map(([k, v]) => `${key}[${k}]=${v}`)
-            .join("&");
+export const fetchJson = async  <T = any> (endpoint: string, params = {}, config = {}): Promise<T> => {
+    const serializeParameters = (params: any) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]: any) => {
+            if (Array.isArray(value)) {
+                value.forEach(val => searchParams.append(`${key}[]`, val));
+            } else if (typeof value === "object") {
+                Object.entries(value).forEach(([k, v]: any) =>
+                    searchParams.append(`${key}[${k}]`, v)
+                );
+            } else {
+                searchParams.append(key, value);
+            }
+        });
+        return searchParams.toString();
+    };
+
+    const mergedParams = { ...params };
+
+    const url = new URL(`${baseUrl}${endpoint}`);
+    const serializedParams = serializeParameters(mergedParams);
+    url.search = serializedParams;
+
+    try {
+        const res = await fetch(url, config);
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
         }
-        return `${key}=${value}`;
-      })
-      .join("&");
-
-    return paramStr;
-  };
-
-  const serializedParams = serializeParameters(params);
-  const uri = `https://api.mangadex.dev/${url}?${serializedParams}`;
-
-  try {
-    const response = await fetch(uri, options);
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch ${uri}: ${response.status} ${response.statusText}`
-      );
+        return await res.json();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
     }
-
-    return (await response.json()) as T;
-  } catch (error) {
-    console.error("Error in fetchJson:", error);
-    throw error;
-  }
 };
+
+
 
 export const fetchCovers = async (
   ids: string[],

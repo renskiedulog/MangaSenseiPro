@@ -20,7 +20,7 @@ const page = async ({ params }: any) => {
       <div className="w-full lg:w-9/12">
         <MangaInfo
           manga={manga}
-          chaptersLength={chapters?.length === 0 ? 0 : chapters?.length - 1}
+          chaptersLength={chapters?.length === 0 ? 0 : chapters?.length}
         />
         <Chapters chapters={chapters} mangaId={params?.mangaId} />
         <div className="w-full bg-[#fff1] rounded mt-2">
