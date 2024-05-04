@@ -117,7 +117,7 @@ export const fetchJson = async <T = any>(
   };
 
   const serializedParams = serializeParameters(params);
-  const uri = `https://api.mangadex.org/${url}?${serializedParams}`;
+  const uri = `https://api.mangadex.dev/${url}?${serializedParams}`;
 
   try {
     const response = await fetch(uri, options);
