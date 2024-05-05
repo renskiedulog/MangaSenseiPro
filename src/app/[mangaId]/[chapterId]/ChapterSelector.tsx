@@ -34,7 +34,7 @@ const ChapterSelector = ({ chapters, chapterId, mangaId }: any) => {
 
   return (
     chapters && (
-      <div className="flex w-full items-center justify-between text-sm md:text-base">
+      <div className="flex mt-5 w-full items-center justify-between text-sm md:text-base">
         <select
           onChange={handleSelect}
           value={currentChapter}

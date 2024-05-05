@@ -33,7 +33,7 @@ const NavigationBar = () => {
   return (
     <NavigationMenu
       className={`max-w-screen-2xl top-0 z-50 w-full justify-between border-b border-border bg-background left-1/2 -translate-x-1/2 h-[3.5rem] md:px-10 px-5 ${
-        pathname === "/" || pathname.split("/")?.length === 2
+        pathname === "/" || pathname.split("/")?.length === 2 || pathname?.split("/")[1] === "search"
           ? "fixed"
           : "absolute"
       }`}

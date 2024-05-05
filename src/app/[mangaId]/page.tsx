@@ -29,7 +29,7 @@ const page = async ({ params }: any) => {
           </p>
           <div className="grid grid-cols-3 p-2 gap-y-5 md:gap-y-6 md:p-4 gap-x-2 md:gap-x-4 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 w-full min-h-max">
             <Suspense
-              fallback={[...Array(60)].map((_, index) => (
+              fallback={[...Array(6)].map((_, index) => (
                 <MangaSkeleton key={index} />
               ))}
             >

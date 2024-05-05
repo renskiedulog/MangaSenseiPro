@@ -67,7 +67,7 @@ const Footer = () => {
         className="w-full object-cover object-center brightness-[.20] absolute -z-10 top-0 left-0 h-full"
       />
       <Link
-        href="#"
+        href="/"
         className={`text-white font-semibold hover:scale-105 transition text-4xl opacity-80 ${font.className}`}
       >
         MangaSensei
@@ -88,11 +88,8 @@ const Footer = () => {
       <p className="w-full px-2 md:px-0 md:w-3/5 text-center text-[10px] md:text-sm text-white opacity-50 leading-tight md:leading-snug tracking-wide">
         This website is intended solely for educational purposes. The manga
         content presented here is the intellectual property of their respective
-        copyright holders. While diligent efforts are made to maintain accuracy,
-        we cannot guarantee it at all times. Users are advised to respect
-        copyright laws and exercise discretion when interacting with the content
-        provided on this site. Your understanding and cooperation are
-        appreciated.
+        copyright holders. No copyright infringement was intended nor abused. No
+        any forms of advertising were added and no type of earnings were made.
       </p>
       <div className="flex items-center text-white">
         {bottomLinks.map((link, index) => (

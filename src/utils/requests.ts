@@ -94,42 +94,44 @@ type OutputModel = {
 
 const baseUrl = "https://api.mangadex.org/";
 
-export const fetchJson = async  <T = any> (endpoint: string, params = {}, config = {}): Promise<T> => {
-    const serializeParameters = (params: any) => {
-        const searchParams = new URLSearchParams();
-        Object.entries(params).forEach(([key, value]: any) => {
-            if (Array.isArray(value)) {
-                value.forEach(val => searchParams.append(`${key}[]`, val));
-            } else if (typeof value === "object") {
-                Object.entries(value).forEach(([k, v]: any) =>
-                    searchParams.append(`${key}[${k}]`, v)
-                );
-            } else {
-                searchParams.append(key, value);
-            }
-        });
-        return searchParams.toString();
-    };
+export const fetchJson = async <T = any>(
+  endpoint: string,
+  params = {},
+  config = {}
+): Promise<T> => {
+  const serializeParameters = (params: any) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]: any) => {
+      if (Array.isArray(value)) {
+        value.forEach((val) => searchParams.append(`${key}[]`, val));
+      } else if (typeof value === "object") {
+        Object.entries(value).forEach(([k, v]: any) =>
+          searchParams.append(`${key}[${k}]`, v)
+        );
+      } else {
+        searchParams.append(key, value);
+      }
+    });
+    return searchParams.toString();
+  };
 
-    const mergedParams = { ...params };
+  const mergedParams = { ...params };
 
-    const url = new URL(`${baseUrl}${endpoint}`);
-    const serializedParams = serializeParameters(mergedParams);
-    url.search = serializedParams;
+  const url = new URL(`${baseUrl}${endpoint}`);
+  const serializedParams = serializeParameters(mergedParams);
+  url.search = serializedParams;
 
-    try {
-        const res = await fetch(url, config);
-        if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return await res.json();
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw error;
+  try {
+    const res = await fetch(url, config);
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
     }
+    return await res.json();
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
 };
-
-
 
 export const fetchCovers = async (
   ids: string[],
@@ -196,6 +198,36 @@ export const getLatestManga = async (): Promise<any[]> => {
     const latest = await fetchLatestChapters(0, 60);
     const latestIds: any = latest?.data.map((k: any) => k.id);
     const covers = await fetchCovers(latestIds, { updatedAt: "desc" });
+
+    const returnedManga = await Promise.all(
+      covers?.data?.map(async (k: any) => ({
+        id: k?.id,
+        updatedAt: k?.attributes?.updatedAt,
+        cover: await fetchCover(
+          `https://uploads.mangadex.org/covers/${k?.id}/${
+            k?.relationships?.find((t: any) => t?.type === "cover_art")
+              ?.attributes?.fileName
+          }.256.jpg`
+        ),
+        title:
+          k?.attributes?.title?.en ||
+          k?.attributes?.title?.["ja-ro"] ||
+          k?.attributes?.title?.ja,
+      })) || []
+    );
+
+    return returnedManga;
+  } catch (error) {
+    console.error("Error in getLatestManga:", error);
+    throw error;
+  }
+};
+
+export const searchManga = async (search: string): Promise<any[]> => {
+  try {
+    const searched = await fetchJson("manga", { title: search });
+    const searchedIds: any = searched?.data.map((k: any) => k.id);
+    const covers = await fetchCovers(searchedIds, { updatedAt: "desc" });
 
     const returnedManga = await Promise.all(
       covers?.data?.map(async (k: any) => ({
@@ -522,14 +554,15 @@ export const getSuggested = async (tags: any) => {
   return returnedManga;
 };
 
-export const getMangaTitle = async (id: string) => {
+export const getMangaNameAndTag = async (id: string) => {
   const manga = await fetchCovers([id]);
   const title =
     manga?.data[0]?.attributes?.title.en ||
     manga?.data[0]?.attributes?.title["ja-ro"] ||
     manga?.data[0]?.attributes?.title?.ja;
 
-  return title;
+  const tags = manga?.data[0]?.attributes?.tags;
+  return { title, tags };
 };
 
 export const getChapterImages = async (chapterId: string) => {
