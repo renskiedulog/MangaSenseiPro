@@ -327,7 +327,6 @@ export const fetchTopListings = async (): Promise<{
           limit: 10,
           order: {
             updatedAt: "desc",
-            rating: "desc",
             followedCount: "desc",
           },
         },
