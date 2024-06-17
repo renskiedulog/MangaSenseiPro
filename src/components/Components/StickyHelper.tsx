@@ -1,8 +1,9 @@
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { FilterIcon, ShuffleIcon } from "lucide-react";
+import { FilterIcon, SearchIcon, ShuffleIcon } from "lucide-react";
 import FeaturedManga from "./FeaturedManga";
 import { getFeaturedManga } from "@/utils/requests";
+import Link from "next/link";
 
 const StickyHelper = async () => {
   const featuredManga = await getFeaturedManga();
@@ -18,14 +19,16 @@ const StickyHelper = async () => {
         <div className="w-full grid grid-cols-2">
           <div className="text-center text-sm">
             <p>Specify Search</p>
-            <Button
-              key="filter-btn"
-              className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
-              size={"sm"}
-            >
-              <FilterIcon className="size-4 mr-1" />
-              Filter
-            </Button>
+            <Link href="/search/try-searching-something">
+              <Button
+                key="filter-btn"
+                className="w-5/6 mt-1 bg-blue-500 hover:bg-blue-600 transition hover:scale-105 text-white"
+                size={"sm"}
+              >
+                <SearchIcon className="size-4 mr-1" />
+                Search
+              </Button>
+            </Link>
           </div>
           <div className="text-center text-sm">
             <p>Randomize</p>

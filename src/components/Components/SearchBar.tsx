@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { SearchIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
@@ -31,7 +31,7 @@ const SearchBar = () => {
     <div className="flex gap-1 relative items-center md:w-full w-1/2">
       <SearchIcon className="absolute top-1/2 left-2 -translate-y-1/2 size-5 opacity-70" />
       <Input
-        className="h-8 focus-visible:ring-accent pl-8"
+        className="h-8 focus-visible:ring-accent pl-8 search-bar"
         placeholder="Search..."
         value={search}
         onChange={handleInputChange}
