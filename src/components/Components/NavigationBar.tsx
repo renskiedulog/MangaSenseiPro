@@ -33,7 +33,9 @@ const NavigationBar = () => {
   return (
     <NavigationMenu
       className={`max-w-screen-2xl top-0 z-50 w-full justify-between border-b border-border bg-background left-1/2 -translate-x-1/2 h-[3.5rem] md:px-10 px-5 ${
-        pathname === "/" || pathname.split("/")?.length === 2 || pathname?.split("/")[1] === "search"
+        pathname === "/" ||
+        pathname.split("/")?.length === 2 ||
+        pathname?.split("/")[1] === "search"
           ? "fixed"
           : "absolute"
       }`}
@@ -45,35 +47,6 @@ const NavigationBar = () => {
           >
             Manga<span className="font-normal">Sensei</span>
           </p>
-        </Link>
-        <NavigationMenuItem className="md:pl-3 md:block hidden">
-          <NavigationMenuTrigger className="opacity-70 hover:opacity-100 font-medium">
-            Genre
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] sm:grid-cols-3 md:grid-cols-5 lg:w-[600px] ">
-              {genres.map((genre) => (
-                <ListItem
-                  key={genre.title}
-                  title={genre.title}
-                  href={genre.href}
-                  className="text-sm text-center"
-                />
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <Link
-          href="#"
-          className="text-sm opacity-70 hover:opacity-100 font-medium px-3 py-2 hover:bg-accent rounded md:block hidden"
-        >
-          Top Manga
-        </Link>
-        <Link
-          href="#"
-          className="text-sm opacity-70 hover:opacity-100 font-medium px-3 py-2 hover:bg-accent rounded md:block hidden"
-        >
-          Latest Manga
         </Link>
       </NavigationMenuList>
       {/* Right Side */}
