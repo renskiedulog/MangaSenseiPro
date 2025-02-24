@@ -13,7 +13,7 @@ const ImageLoader = async ({ images }: any) => {
               height={500}
               key={idx}
               className="!w-full !h-full object-cover"
-              priority
+              loading="lazy"
             />
           ) : (
             ""

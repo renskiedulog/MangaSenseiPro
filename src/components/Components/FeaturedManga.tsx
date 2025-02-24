@@ -77,7 +77,7 @@ const FeaturedManga = ({ newFeatured }: { newFeatured: any }) => {
         height={300}
         width={200}
         src={featuredManga?.cover}
-        priority
+        loading="lazy"
         className="w-full max-h-80 object-cover object-center mx-auto border-accent group-hover:brightness-50 z-0"
       />
       {/* Overlay */}

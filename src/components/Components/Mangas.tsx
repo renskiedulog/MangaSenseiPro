@@ -21,6 +21,7 @@ const Mangas = async ({ mangas }: { mangas: any }) => {
             width={200}
             quality={10}
             alt={manga.title || "manga"}
+            loading="lazy"
             className="aspect-[1/1.3] w-full rounded object-cover group-hover:scale-[1.02] brightness-[.8] group-hover:brightness-100 shadow"
           />
           <div className="h-6 md:text-[15px] opacity-80 group-hover:opacity-100 pt-1 font-normal md:font-semibold text-sm overflow-hidden group-hover:text-blue-400">

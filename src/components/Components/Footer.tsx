@@ -63,7 +63,7 @@ const Footer = () => {
         height={500}
         width={500}
         alt="footer-bg-image"
-        priority
+        loading="lazy"
         className="w-full object-cover object-center brightness-[.20] absolute -z-10 top-0 left-0 h-full"
       />
       <Link

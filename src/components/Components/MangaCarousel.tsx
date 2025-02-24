@@ -90,7 +90,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             width={300}
             alt="featured-image-alt"
             className="w-full absolute h-[320px] object-cover z-0 featured-bg shadow-md"
-            priority
+            loading="lazy"
           />
           {/* Front */}
           <Image
@@ -99,6 +99,7 @@ const MangaCarousel = ({ carouselItems }: { carouselItems: any }) => {
             src={manga?.cover}
             alt={manga?.title || "manga"}
             quality={50}
+            loading="lazy"
             className="z-20 w-28 md:w-40 sm:w-36 md:h-4/5 object-cover rounded-md mx-2"
           />
           <div className="z-20 w-7/12 md:max-w-[55vw] md:w-full h-5/6 flex flex-col md:px-0 px-2 justify-between">

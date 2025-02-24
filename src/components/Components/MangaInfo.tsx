@@ -34,6 +34,7 @@ const MangaInfo = ({ manga, chaptersLength }: any) => {
               src={mangaInfo?.cover}
               height={500}
               width={500}
+              loading="lazy"
               alt={mangaInfo?.title || "manga"}
               className="rounded aspect-[1/1.4] object-cover w-2/3 md:w-full mx-auto"
             />
